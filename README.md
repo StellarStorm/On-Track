@@ -121,7 +121,7 @@ uv run ruff check .
 The tests use a saved SEPTA response in `tests/fixtures/`.
 
 `scripts/redraw_glyphs.py` redraws a few characters in the board's font
-file. The new shapes are drawn as dot grids at the top of the script; edit
+files. The new shapes are drawn as dot grids at the top of the script; edit
 them and run:
 
 ```sh
@@ -156,8 +156,8 @@ corners or pinned stations in `LAYOUT` usually fixes them.
 ## Credits
 
 The board uses the [Doto](https://github.com/oliverlalan/Doto) font, under
-the SIL Open Font License (`static/fonts/OFL.txt`). The copy in
-`static/fonts/` is modified: `0` is redrawn as an oval in place of Doto's
+the SIL Open Font License (`static/fonts/OFL.txt`). The copies in
+`static/fonts/` (WOFF2, and WOFF for older iPads) are modified: `0` is redrawn as an oval in place of Doto's
 diamond, and `:` `;` `.` `,` use single dots (see
 `scripts/redraw_glyphs.py`).
 

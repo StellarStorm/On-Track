@@ -13,7 +13,10 @@
     <style>
       @font-face {
         font-family: "Doto";
-        src: url("/static/fonts/doto-latin-700-normal.woff2") format("woff2");
+        /* WOFF for older iPads, whose Safari can't read WOFF2. */
+        src:
+          url("/static/fonts/doto-latin-700-normal.woff2") format("woff2"),
+          url("/static/fonts/doto-latin-700-normal.woff") format("woff");
         font-weight: 700;
       }
       /*

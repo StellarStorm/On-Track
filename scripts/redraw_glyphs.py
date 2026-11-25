@@ -2,8 +2,9 @@
 
 Doto draws ``0`` as a diamond and ``:`` ``;`` ``.`` ``,`` with plus-shaped
 clusters of dots. This replaces them with the glyphs drawn below, made from
-the font's own dot, and rewrites the font file in place. Running it again
-gives the same result, so edit the drawings and rerun::
+the font's own dot, and rewrites the font file in place. It also writes a
+WOFF copy next to it for older iPads: Safari reads WOFF2 only from iOS 10.
+Running it again gives the same result, so edit the drawings and rerun::
 
     uv run scripts/redraw_glyphs.py
 
@@ -119,7 +120,8 @@ def one_dot(font: TTFont) -> tuple[list[tuple], int, int]:
 
 
 def redraw(path: Path) -> None:
-    font = TTFont(path)
+    # Keep the saved date, so rerunning leaves the files byte-for-byte the same.
+    font = TTFont(path, recalcTimestamp=False)
     dot, dot_column, dot_row = one_dot(font)
     cmap = font.getBestCmap()
     glyf = font['glyf']
@@ -140,6 +142,11 @@ def redraw(path: Path) -> None:
         hmtx[name] = (width, glyph.xMin)
     font.save(path)
     print(f'Redrew {"".join(DRAWINGS)} in {path.name}')
+    # The same font as WOFF, for browsers without WOFF2.
+    copy = path.with_suffix('.woff')
+    font.flavor = 'woff'
+    font.save(copy)
+    print(f'Wrote {copy.name}')
 
 
 if __name__ == '__main__':
