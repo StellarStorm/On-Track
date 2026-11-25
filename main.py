@@ -12,10 +12,12 @@ from fastapi.staticfiles import StaticFiles
 from config import Config, ConfigError
 from src.logging_config import get_logger
 from src.septa import Departure, DepartureBoard
+from src.trainview import StationMap, TrainMap
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATE_DIR = BASE_DIR / 'templates'
 STATIC_DIR = BASE_DIR / 'static'
+MAP_FILE = STATIC_DIR / 'map.json'
 
 try:
     config = Config.load()
@@ -58,6 +60,18 @@ async def lifespan(app: FastAPI):
             ttl_seconds=config.refresh_seconds,
         )
         logger.info('Showing departures for %s', config.station)
+        app.state.trains = None
+        if MAP_FILE.exists():
+            app.state.trains = TrainMap(
+                client,
+                StationMap.load(MAP_FILE),
+                ttl_seconds=config.refresh_seconds,
+            )
+        else:
+            logger.warning(
+                'No %s; run scripts/build_map.py to enable /map',
+                MAP_FILE.relative_to(BASE_DIR),
+            )
         yield
 
 
@@ -90,6 +104,39 @@ def get_departures(request: Request):
         'updated': updated.isoformat() if updated else None,
         'stale': stale,
         'departures': [departure_row(departure) for departure in departures],
+    }
+
+
+@app.get('/map')
+def map_view():
+    return FileResponse(TEMPLATE_DIR / 'map.html')
+
+
+@app.get('/trains')
+def get_trains(request: Request):
+    settings = {
+        'look': config.map_look,
+        'refresh_seconds': config.refresh_seconds,
+        'time_format': config.time_format,
+    }
+    if request.app.state.trains is None:
+        return {**settings, 'updated': None, 'stale': True, 'trains': []}
+    trains, updated, stale = request.app.state.trains.snapshot()
+    return {
+        **settings,
+        'updated': updated.isoformat() if updated else None,
+        'stale': stale,
+        'trains': [
+            {
+                'train': train.number,
+                'line': train.line,
+                'destination': train.destination,
+                'minutes_late': train.minutes_late,
+                'station': train.station,
+            }
+            for train in trains
+            if train.station
+        ],
     }
 
 

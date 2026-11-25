@@ -7,14 +7,22 @@ style of the Jefferson Station platform signs. A small server fetches live
 departures from SEPTA, and any browser on the network shows the board. An
 old iPad in kiosk mode works well.
 
-Departures come from SEPTA's public
-[Arrivals API](https://www3.septa.org/api/Arrivals/index.php). No account or
-API key is needed.
+A second page shows a live map of the whole Regional Rail system, in the
+style of a Metroboard: every station is a dot, lit in its line's color while
+a train is there.
 
-| Path          | What it is                     |
-| ------------- | ------------------------------ |
-| `/`           | The departure board            |
-| `/departures` | The same data as JSON          |
+Departures come from SEPTA's public
+[Arrivals API](https://www3.septa.org/api/Arrivals/index.php), and train
+positions from its
+[TrainView API](https://www3.septa.org/api/TrainView/index.php). No account
+or API key is needed.
+
+| Path          | What it is                           |
+| ------------- | ------------------------------------ |
+| `/`           | The departure board                  |
+| `/departures` | The same data as JSON                |
+| `/map`        | The live Regional Rail map           |
+| `/trains`     | Every train and its station, as JSON |
 
 ## Getting Started
 
@@ -44,6 +52,7 @@ spellings. A misspelled station shows "NO DEPARTURES LISTED".
 | `rows`            | `8`                   | Departures on the board (1–12).                     |
 | `refresh_seconds` | `30`                  | How often to ask SEPTA for new data (15 or more).   |
 | `time_format`     | `"12"`                | `"12"` or `"24"` hour times.                        |
+| `map_look`        | `"light"`             | Colors of `/map`: `light` or `dark`.                |
 | `host`, `port`    | `0.0.0.0`, `8000`     | Address the server listens on.                      |
 | `log_level`       | `"INFO"`              | Python logging level.                               |
 
@@ -72,6 +81,19 @@ from another device.
 
 However many displays are open, the server asks SEPTA at most once per
 `refresh_seconds`.
+
+## Reading the Map
+
+Each station lights in its line's color while a train is there or has just
+left it, and goes dark when the train moves on. The legend in the top-left
+corner gives each line's color. The map is updated every
+`refresh_seconds`, from the same single request to SEPTA however many
+displays are open. A train can be through-routed onto another line, so the
+color is the line SEPTA reports for it, which may not be the line the
+station is on.
+
+The bottom corner shows the time, DELAYED DATA when SEPTA did not answer
+the last request, and OFFLINE when the display cannot reach this server.
 
 ## Using an iPad as the Display
 
@@ -115,6 +137,22 @@ of the script:
 uv run scripts/logo_dots.py
 ```
 
+`scripts/build_map.py` builds the map's stations and tracks
+(`static/map.json`) from SEPTA's GTFS schedule data. It downloads SEPTA's
+latest release from [GitHub](https://github.com/septadev/GTFS/releases),
+takes each line's stations in order, lays them out on the schematic set at
+the top of the script, and places every station name where it doesn't run
+into anything. Run it again when SEPTA publishes new data, such as a new or
+renamed station, then restart the server:
+
+```sh
+uv run scripts/build_map.py
+```
+
+To use a GTFS zip you already have, pass `--zip path/to/gtfs_public.zip`.
+The script lists any names it couldn't place cleanly; moving a line's
+corners or pinned stations in `LAYOUT` usually fixes them.
+
 ## Credits
 
 The board uses the [Doto](https://github.com/oliverlalan/Doto) font, under
@@ -127,3 +165,6 @@ The SEPTA logo in the title bar is drawn from
 [SEPTA.svg](https://commons.wikimedia.org/wiki/File:SEPTA.svg) on Wikimedia
 Commons. SEPTA's name and logo are SEPTA's trademarks; this project is not
 affiliated with SEPTA.
+
+The map's stations and line orders come from SEPTA's
+[GTFS data](https://github.com/septadev/GTFS).

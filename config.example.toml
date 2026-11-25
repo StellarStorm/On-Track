@@ -18,6 +18,9 @@ refresh_seconds = 30
 # "12" or "24" hour times.
 time_format = "12"
 
+# Colors of the live map at /map: "light" or "dark".
+map_look = "light"
+
 # host = "0.0.0.0"
 # port = 8000
 # log_level = "INFO"

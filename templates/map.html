@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>On Track Map</title>
+    <style>
+      /*
+       * Light or dark, picked by the map_look setting. Unlit stations are
+       * dots; a station lights in its line's color while a train is there.
+       */
+      :root {
+        --background: #f5f5f3;
+        --track: #8a8d92;
+        --dot: #2a2b2e;
+        --label: #2a2b2e;
+        --muted: #6b6e73;
+        --notice: #c0392b;
+      }
+      .dark {
+        --background: #0d0f14;
+        --track: #3a4253;
+        --dot: #262c3a;
+        --label: #a9b2c4;
+        --muted: #6c7689;
+        --notice: #ffb01f;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--background);
+      }
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        cursor: none;
+        -webkit-text-size-adjust: 100%;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .track {
+        fill: none;
+        stroke: var(--track);
+        stroke-width: 0.13;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .label {
+        fill: var(--label);
+        font-size: 0.42px;
+        letter-spacing: 0.01px;
+      }
+      /*
+       * An unlit station is a dim dot. A lit one is its line's color (bright
+       * colors, set in scripts/build_map.py), a little larger, fading on and
+       * off like a bulb.
+       */
+      .dot {
+        fill: var(--dot);
+      }
+      .swatch {
+        stroke-width: 0.04;
+      }
+      .lit {
+        opacity: 0;
+        stroke-width: 0.04;
+        -webkit-transition: opacity 0.4s ease-out;
+        transition: opacity 0.4s ease-out;
+      }
+      .lit.on {
+        opacity: 1;
+      }
+      /* On a light background a thin darker edge keeps pale colors, such as
+         yellow, from fading into it. */
+      .dark .lit,
+      .dark .swatch {
+        stroke: none;
+      }
+      #plate {
+        position: absolute;
+        right: 2.5vmin;
+        bottom: 2vmin;
+        text-align: right;
+        color: var(--muted);
+        font-size: 1.7vmin;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        line-height: 1.5;
+      }
+      #notice {
+        color: var(--notice);
+      }
+    </style>
+  </head>
+  <body>
+    <svg id="map" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="plate">
+      <div>SEPTA Regional Rail</div>
+      <div><span id="clock"></span> <span id="notice"></span></div>
+    </div>
+    <script>
+      // Kept to older JavaScript so the page runs on old iPads.
+      var NS = "http://www.w3.org/2000/svg";
+      var RELOAD_HOURS = 6;
+      var settings = { refresh_seconds: 30, time_format: "12" };
+      var map = null;
+      // Each station's lit marker, by stop id.
+      var dots = {};
+      var timer = null;
+
+      function svgEl(tag, attributes, parent) {
+        var node = document.createElementNS(NS, tag);
+        for (var name in attributes) {
+          node.setAttribute(name, attributes[name]);
+        }
+        if (parent) {
+          parent.appendChild(node);
+        }
+        return node;
+      }
+
+      function getJSON(url, done, failed) {
+        var request = new XMLHttpRequest();
+        request.open("GET", url);
+        request.onload = function () {
+          if (request.status === 200) {
+            done(JSON.parse(request.responseText));
+          } else {
+            failed();
+          }
+        };
+        request.onerror = failed;
+        request.send();
+      }
+
+      // Where a station's name goes: level to the left or right of the
+      // dot, or angled at 45 degrees above or below it, on either side.
+      // scripts/build_map.py picks the side; these offsets must match its
+      // name_points() and GAP.
+      var ANGLED = {
+        above: { dx: 1, dy: -1, angle: -45, anchor: "start" },
+        below: { dx: 1, dy: 1, angle: 45, anchor: "start" },
+        "above-left": { dx: -1, dy: -1, angle: 45, anchor: "end" },
+        "below-left": { dx: -1, dy: 1, angle: -45, anchor: "end" },
+      };
+
+      function labelFor(station, parent) {
+        var gap = 0.42;
+        var diagonal = gap * Math.SQRT1_2;
+        var x = station.x;
+        var y = station.y;
+        var attributes = { class: "label", "dominant-baseline": "central" };
+        var angled = ANGLED[station.side];
+        if (angled) {
+          attributes.x = x + angled.dx * diagonal;
+          attributes.y = y + angled.dy * diagonal;
+          attributes["text-anchor"] = angled.anchor;
+          attributes.transform =
+            "rotate(" + angled.angle + " " + attributes.x + " " + attributes.y + ")";
+        } else if (station.side === "left") {
+          attributes.x = x - gap;
+          attributes.y = y;
+          attributes["text-anchor"] = "end";
+        } else {
+          attributes.x = x + gap;
+          attributes.y = y;
+        }
+        var text = svgEl("text", attributes, parent);
+        text.textContent = station.label;
+      }
+
+      function draw() {
+        var svg = document.getElementById("map");
+        while (svg.firstChild) {
+          svg.removeChild(svg.firstChild);
+        }
+        var all = svgEl("g", {}, svg);
+        for (var i = 0; i < map.tracks.length; i++) {
+          var points = [];
+          for (var j = 0; j < map.tracks[i].length; j++) {
+            points.push(map.tracks[i][j].join(","));
+          }
+          svgEl("polyline", { class: "track", points: points.join(" ") }, all);
+        }
+        var labels = svgEl("g", {}, all);
+        var stations = svgEl("g", {}, all);
+        for (var stop in map.stations) {
+          var station = map.stations[stop];
+          var at = { cx: station.x, cy: station.y };
+          labelFor(station, labels);
+          svgEl("circle", { class: "dot", cx: at.cx, cy: at.cy, r: 0.26 }, stations);
+          dots[stop] = svgEl(
+            "circle",
+            { class: "lit", cx: at.cx, cy: at.cy, r: 0.32 },
+            stations
+          );
+        }
+        drawLegend(all);
+        fit();
+      }
+
+      // Each line's name beside a dot in the color its stations light, then
+      // an unlit dot. scripts/build_map.py places the legend in an empty
+      // corner and keeps station names clear of it; ROW and SWATCH must
+      // match its LEGEND_ROW and LEGEND_SWATCH.
+      function drawLegend(parent) {
+        if (!map.legend) {
+          return;
+        }
+        var ROW = 0.75;
+        var SWATCH = 0.7;
+        var ids = [];
+        for (var id in map.lines) {
+          ids.push(id);
+        }
+        ids.sort(function (a, b) {
+          return map.lines[a].name < map.lines[b].name ? -1 : 1;
+        });
+        var legend = svgEl("g", {}, parent);
+        var x = map.legend.x;
+        function row(index, className, color, text) {
+          var y = map.legend.y + (index + 0.5) * ROW;
+          var dot = svgEl(
+            "circle",
+            { class: className, cx: x + 0.26, cy: y, r: 0.26 },
+            legend
+          );
+          if (color) {
+            dot.setAttribute("fill", color);
+            dot.setAttribute("stroke", darker(color));
+          }
+          var name = svgEl(
+            "text",
+            { class: "label", x: x + SWATCH, y: y, "dominant-baseline": "central" },
+            legend
+          );
+          name.textContent = text;
+        }
+        for (var i = 0; i < ids.length; i++) {
+          row(i, "swatch", map.lines[ids[i]].color, map.lines[ids[i]].name);
+        }
+        row(ids.length + 1, "dot", null, "No train");
+      }
+
+      // The edge for a lit marker on a light background: its color, darker.
+      function darker(hex) {
+        var out = "#";
+        for (var i = 1; i < 7; i += 2) {
+          var channel = Math.round(parseInt(hex.substr(i, 2), 16) * 0.6);
+          out += ("0" + channel.toString(16)).slice(-2);
+        }
+        return out;
+      }
+
+      // Scale the map to fill the panel, names included.
+      function fit() {
+        var svg = document.getElementById("map");
+        var box = svg.firstChild.getBBox();
+        var pad = 1;
+        svg.setAttribute(
+          "viewBox",
+          [box.x - pad, box.y - pad, box.width + 2 * pad, box.height + 2 * pad]
+            .join(" ")
+        );
+      }
+
+      function light(trains) {
+        var lit = {};
+        for (var i = 0; i < trains.length; i++) {
+          var train = trains[i];
+          if (!lit[train.station]) {
+            lit[train.station] = train;
+          }
+        }
+        for (var stop in dots) {
+          var train = lit[stop];
+          var id = train && lineId(train.line);
+          var marker = dots[stop];
+          // SVG elements in old Safari have no classList.
+          marker.setAttribute("class", id ? "lit on" : "lit");
+          if (id) {
+            // Keep the old color while a marker fades out.
+            var color = map.lines[id].color;
+            marker.setAttribute("fill", color);
+            marker.setAttribute("stroke", darker(color));
+          }
+        }
+      }
+
+      function lineId(name) {
+        for (var id in map.lines) {
+          if (map.lines[id].name === name) {
+            return id;
+          }
+        }
+        return null;
+      }
+
+      function setNotice(text) {
+        document.getElementById("notice").textContent = text;
+      }
+
+      function refresh() {
+        getJSON(
+          "/trains",
+          function (data) {
+            settings.refresh_seconds = data.refresh_seconds;
+            settings.time_format = data.time_format;
+            document.body.className = data.look;
+            light(data.trains);
+            setNotice(data.stale ? (data.updated ? "Delayed data" : "Waiting for SEPTA") : "");
+            schedule();
+          },
+          function () {
+            setNotice("Offline");
+            schedule();
+          }
+        );
+      }
+
+      function schedule() {
+        clearTimeout(timer);
+        timer = setTimeout(refresh, settings.refresh_seconds * 1000);
+      }
+
+      function tick() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = ("0" + now.getMinutes()).slice(-2);
+        document.getElementById("clock").textContent =
+          settings.time_format === "24"
+            ? ("0" + hours).slice(-2) + ":" + minutes
+            : (hours % 12 || 12) + ":" + minutes + (hours < 12 ? " AM" : " PM");
+      }
+
+      getJSON(
+        "/static/map.json",
+        function (data) {
+          map = data;
+          draw();
+          refresh();
+        },
+        function () {
+          setNotice("No map: run scripts/build_map.py");
+        }
+      );
+      window.addEventListener("resize", function () {
+        if (map) {
+          fit();
+        }
+      });
+      tick();
+      setInterval(tick, 1000);
+      // Old Safari slowly leaks memory on pages left open for days.
+      setTimeout(function () {
+        window.location.reload();
+      }, RELOAD_HOURS * 3600 * 1000);
+    </script>
+  </body>
+</html>

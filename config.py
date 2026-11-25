@@ -58,6 +58,8 @@ class Config(BaseSettings):
 
     # Display
     time_format: Literal['12', '24'] = '12'
+    # The /map page's colors.
+    map_look: Literal['light', 'dark'] = 'light'
 
     # Server
     host: str = '0.0.0.0'
@@ -70,7 +72,7 @@ class Config(BaseSettings):
         # Allow `time_format = 12` as well as `time_format = "12"` in TOML.
         return str(value) if isinstance(value, int) else value
 
-    @field_validator('direction', mode='before')
+    @field_validator('direction', 'map_look', mode='before')
     @classmethod
     def _lower(cls, value):
         return value.lower() if isinstance(value, str) else value

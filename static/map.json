@@ -1,0 +1,1938 @@
+{
+ "feed_version": "v202611220",
+ "legend": {
+  "x": -29,
+  "y": -28
+ },
+ "stations": {
+  "90406": {
+   "name": "Penn Medicine Station",
+   "label": "Penn Medicine",
+   "side": "left",
+   "x": -4,
+   "y": 3,
+   "lat": 39.94806,
+   "lon": -75.19028
+  },
+  "90004": {
+   "name": "Gray 30th St Station",
+   "label": "30th Street",
+   "side": "below",
+   "x": -4,
+   "y": 0,
+   "lat": 39.95667,
+   "lon": -75.18166
+  },
+  "90005": {
+   "name": "Suburban Station",
+   "label": "Suburban",
+   "side": "below",
+   "x": -2,
+   "y": 0,
+   "lat": 39.95389,
+   "lon": -75.16778
+  },
+  "90006": {
+   "name": "Jefferson Station",
+   "label": "Jefferson",
+   "side": "below",
+   "x": 0,
+   "y": 0,
+   "lat": 39.9525,
+   "lon": -75.15806
+  },
+  "90007": {
+   "name": "Temple University",
+   "label": "Temple University",
+   "side": "below",
+   "x": 2,
+   "y": -2,
+   "lat": 39.98139,
+   "lon": -75.14944
+  },
+  "90008": {
+   "name": "North Broad",
+   "label": "North Broad",
+   "side": "right",
+   "x": 2.0,
+   "y": -5.0,
+   "lat": 39.99222,
+   "lon": -75.15389
+  },
+  "90009": {
+   "name": "Wayne Junction",
+   "label": "Wayne Junction",
+   "side": "right",
+   "x": 2.0,
+   "y": -8.0,
+   "lat": 40.02222,
+   "lon": -75.16
+  },
+  "90407": {
+   "name": "Fern Rock Transit Center",
+   "label": "Fern Rock TC",
+   "side": "left",
+   "x": 2.0,
+   "y": -10.0,
+   "lat": 40.04055,
+   "lon": -75.13472
+  },
+  "90408": {
+   "name": "Melrose Park",
+   "label": "Melrose Park",
+   "side": "left",
+   "x": 2.0,
+   "y": -11.5,
+   "lat": 40.05944,
+   "lon": -75.12917
+  },
+  "90409": {
+   "name": "Elkins Park",
+   "label": "Elkins Park",
+   "side": "left",
+   "x": 2.0,
+   "y": -13.0,
+   "lat": 40.07139,
+   "lon": -75.12778
+  },
+  "90410": {
+   "name": "Jenkintown-Wyncote",
+   "label": "Jenkintown-Wyncote",
+   "side": "left",
+   "x": 2.0,
+   "y": -14.5,
+   "lat": 40.09278,
+   "lon": -75.1375
+  },
+  "90411": {
+   "name": "Glenside",
+   "label": "Glenside",
+   "side": "left",
+   "x": 2.0,
+   "y": -16.0,
+   "lat": 40.10139,
+   "lon": -75.15361
+  },
+  "90523": {
+   "name": "North Hills",
+   "label": "North Hills",
+   "side": "left",
+   "x": 2.0,
+   "y": -17.111,
+   "lat": 40.11195,
+   "lon": -75.16944
+  },
+  "90524": {
+   "name": "Oreland",
+   "label": "Oreland",
+   "side": "left",
+   "x": 2.0,
+   "y": -18.222,
+   "lat": 40.11833,
+   "lon": -75.18389
+  },
+  "90525": {
+   "name": "Fort Washington",
+   "label": "Fort Washington",
+   "side": "left",
+   "x": 2.0,
+   "y": -19.333,
+   "lat": 40.13583,
+   "lon": -75.21222
+  },
+  "90526": {
+   "name": "Ambler",
+   "label": "Ambler",
+   "side": "left",
+   "x": 2.0,
+   "y": -20.444,
+   "lat": 40.15361,
+   "lon": -75.22472
+  },
+  "90527": {
+   "name": "Penllyn",
+   "label": "Penllyn",
+   "side": "left",
+   "x": 2.0,
+   "y": -21.556,
+   "lat": 40.17,
+   "lon": -75.24416
+  },
+  "90528": {
+   "name": "Gwynedd Valley",
+   "label": "Gwynedd Valley",
+   "side": "left",
+   "x": 2.0,
+   "y": -22.667,
+   "lat": 40.18472,
+   "lon": -75.25694
+  },
+  "90529": {
+   "name": "North Wales",
+   "label": "North Wales",
+   "side": "left",
+   "x": 2.0,
+   "y": -23.778,
+   "lat": 40.21417,
+   "lon": -75.27722
+  },
+  "90530": {
+   "name": "Pennbrook",
+   "label": "Pennbrook",
+   "side": "left",
+   "x": 2.0,
+   "y": -24.889,
+   "lat": 40.23028,
+   "lon": -75.28167
+  },
+  "90531": {
+   "name": "Lansdale",
+   "label": "Lansdale",
+   "side": "left",
+   "x": 2.0,
+   "y": -26.0,
+   "lat": 40.24278,
+   "lon": -75.285
+  },
+  "90539": {
+   "name": "9th St Lansdale",
+   "label": "9th St Lansdale",
+   "side": "left",
+   "x": 2.0,
+   "y": -27.0,
+   "lat": 40.25,
+   "lon": -75.27917
+  },
+  "90532": {
+   "name": "Fortuna",
+   "label": "Fortuna",
+   "side": "left",
+   "x": 2.0,
+   "y": -28.0,
+   "lat": 40.25945,
+   "lon": -75.26611
+  },
+  "90533": {
+   "name": "Colmar",
+   "label": "Colmar",
+   "side": "above",
+   "x": 3.0,
+   "y": -28.0,
+   "lat": 40.26833,
+   "lon": -75.25445
+  },
+  "90534": {
+   "name": "Link Belt",
+   "label": "Link Belt",
+   "side": "above",
+   "x": 4.0,
+   "y": -28.0,
+   "lat": 40.27389,
+   "lon": -75.24667
+  },
+  "90535": {
+   "name": "Chalfont",
+   "label": "Chalfont",
+   "side": "above",
+   "x": 5.0,
+   "y": -28.0,
+   "lat": 40.28778,
+   "lon": -75.20972
+  },
+  "90536": {
+   "name": "New Britain",
+   "label": "New Britain",
+   "side": "above",
+   "x": 6.0,
+   "y": -28.0,
+   "lat": 40.2975,
+   "lon": -75.17973
+  },
+  "90537": {
+   "name": "Delaware Valley University",
+   "label": "Delaware Valley U",
+   "side": "above",
+   "x": 7.0,
+   "y": -28.0,
+   "lat": 40.29722,
+   "lon": -75.16167
+  },
+  "90538": {
+   "name": "Doylestown",
+   "label": "Doylestown",
+   "side": "above",
+   "x": 8.0,
+   "y": -28.0,
+   "lat": 40.30639,
+   "lon": -75.13028
+  },
+  "90412": {
+   "name": "Ardsley",
+   "label": "Ardsley",
+   "side": "right",
+   "x": 3.0,
+   "y": -17.0,
+   "lat": 40.11417,
+   "lon": -75.15305
+  },
+  "90413": {
+   "name": "Roslyn",
+   "label": "Roslyn",
+   "side": "right",
+   "x": 4.0,
+   "y": -18.0,
+   "lat": 40.12083,
+   "lon": -75.13416
+  },
+  "90414": {
+   "name": "Crestmont",
+   "label": "Crestmont",
+   "side": "right",
+   "x": 5.0,
+   "y": -19.0,
+   "lat": 40.13334,
+   "lon": -75.11861
+  },
+  "90415": {
+   "name": "Willow Grove",
+   "label": "Willow Grove",
+   "side": "right",
+   "x": 6.0,
+   "y": -20.0,
+   "lat": 40.14389,
+   "lon": -75.11417
+  },
+  "90416": {
+   "name": "Hatboro",
+   "label": "Hatboro",
+   "side": "right",
+   "x": 7.0,
+   "y": -21.0,
+   "lat": 40.17611,
+   "lon": -75.1025
+  },
+  "90417": {
+   "name": "Warminster",
+   "label": "Warminster",
+   "side": "right",
+   "x": 8.0,
+   "y": -22.0,
+   "lat": 40.19528,
+   "lon": -75.08916
+  },
+  "90315": {
+   "name": "Noble",
+   "label": "Noble",
+   "side": "above",
+   "x": 3.303,
+   "y": -14.5,
+   "lat": 40.10444,
+   "lon": -75.12417
+  },
+  "90316": {
+   "name": "Rydal",
+   "label": "Rydal",
+   "side": "above",
+   "x": 4.605,
+   "y": -14.5,
+   "lat": 40.1075,
+   "lon": -75.11056
+  },
+  "90317": {
+   "name": "Meadowbrook",
+   "label": "Meadowbrook",
+   "side": "right",
+   "x": 5.789,
+   "y": -14.789,
+   "lat": 40.11139,
+   "lon": -75.0925
+  },
+  "90318": {
+   "name": "Bethayres",
+   "label": "Bethayres",
+   "side": "right",
+   "x": 6.71,
+   "y": -15.71,
+   "lat": 40.11666,
+   "lon": -75.06834
+  },
+  "90319": {
+   "name": "Philmont",
+   "label": "Philmont",
+   "side": "right",
+   "x": 7.631,
+   "y": -16.631,
+   "lat": 40.12194,
+   "lon": -75.04361
+  },
+  "90320": {
+   "name": "Forest Hills",
+   "label": "Forest Hills",
+   "side": "right",
+   "x": 8.552,
+   "y": -17.552,
+   "lat": 40.12778,
+   "lon": -75.02055
+  },
+  "90321": {
+   "name": "Somerton",
+   "label": "Somerton",
+   "side": "right",
+   "x": 9.473,
+   "y": -18.473,
+   "lat": 40.13055,
+   "lon": -75.01195
+  },
+  "90322": {
+   "name": "Trevose",
+   "label": "Trevose",
+   "side": "right",
+   "x": 10.394,
+   "y": -19.394,
+   "lat": 40.14028,
+   "lon": -74.9825
+  },
+  "90323": {
+   "name": "Neshaminy Falls",
+   "label": "Neshaminy Falls",
+   "side": "right",
+   "x": 11.315,
+   "y": -20.315,
+   "lat": 40.14695,
+   "lon": -74.96167
+  },
+  "90324": {
+   "name": "Langhorne",
+   "label": "Langhorne",
+   "side": "right",
+   "x": 12.237,
+   "y": -21.237,
+   "lat": 40.16083,
+   "lon": -74.9125
+  },
+  "90325": {
+   "name": "Woodbourne",
+   "label": "Woodbourne",
+   "side": "right",
+   "x": 13.158,
+   "y": -22.158,
+   "lat": 40.1925,
+   "lon": -74.88917
+  },
+  "90326": {
+   "name": "Yardley",
+   "label": "Yardley",
+   "side": "right",
+   "x": 14.079,
+   "y": -23.079,
+   "lat": 40.23528,
+   "lon": -74.83056
+  },
+  "90327": {
+   "name": "West Trenton",
+   "label": "West Trenton",
+   "side": "right",
+   "x": 15.0,
+   "y": -24.0,
+   "lat": 40.25778,
+   "lon": -74.81528
+  },
+  "90811": {
+   "name": "Olney",
+   "label": "Olney",
+   "side": "right",
+   "x": 3.078,
+   "y": -9.078,
+   "lat": 40.03333,
+   "lon": -75.12278
+  },
+  "90812": {
+   "name": "Lawndale",
+   "label": "Lawndale",
+   "side": "above",
+   "x": 4.427,
+   "y": -9.5,
+   "lat": 40.05139,
+   "lon": -75.10306
+  },
+  "90813": {
+   "name": "Cheltenham",
+   "label": "Cheltenham",
+   "side": "above",
+   "x": 5.951,
+   "y": -9.5,
+   "lat": 40.05806,
+   "lon": -75.09278
+  },
+  "90814": {
+   "name": "Ryers",
+   "label": "Ryers",
+   "side": "above",
+   "x": 7.476,
+   "y": -9.5,
+   "lat": 40.06417,
+   "lon": -75.08639
+  },
+  "90815": {
+   "name": "Fox Chase",
+   "label": "Fox Chase",
+   "side": "above",
+   "x": 9.0,
+   "y": -9.5,
+   "lat": 40.07639,
+   "lon": -75.08334
+  },
+  "90712": {
+   "name": "Wister",
+   "label": "Wister",
+   "side": "below",
+   "x": 0.056,
+   "y": -8.0,
+   "lat": 40.03611,
+   "lon": -75.16111
+  },
+  "90713": {
+   "name": "Germantown",
+   "label": "Germantown",
+   "side": "below",
+   "x": -1.889,
+   "y": -8.0,
+   "lat": 40.0375,
+   "lon": -75.17167
+  },
+  "90714": {
+   "name": "Washington Ln",
+   "label": "Washington Ln",
+   "side": "left",
+   "x": -3.5,
+   "y": -8.333,
+   "lat": 40.05083,
+   "lon": -75.17139
+  },
+  "90715": {
+   "name": "Stenton",
+   "label": "Stenton",
+   "side": "left",
+   "x": -3.5,
+   "y": -10.278,
+   "lat": 40.06055,
+   "lon": -75.17861
+  },
+  "90716": {
+   "name": "Sedgwick",
+   "label": "Sedgwick",
+   "side": "left",
+   "x": -3.5,
+   "y": -12.222,
+   "lat": 40.06278,
+   "lon": -75.18528
+  },
+  "90717": {
+   "name": "Mount Airy",
+   "label": "Mount Airy",
+   "side": "left",
+   "x": -3.5,
+   "y": -14.167,
+   "lat": 40.06528,
+   "lon": -75.19083
+  },
+  "90718": {
+   "name": "Wyndmoor",
+   "label": "Wyndmoor",
+   "side": "left",
+   "x": -3.5,
+   "y": -16.111,
+   "lat": 40.07333,
+   "lon": -75.19666
+  },
+  "90719": {
+   "name": "Gravers",
+   "label": "Gravers",
+   "side": "left",
+   "x": -3.5,
+   "y": -18.056,
+   "lat": 40.0775,
+   "lon": -75.20167
+  },
+  "90720": {
+   "name": "Chestnut Hill East",
+   "label": "Chestnut Hill East",
+   "side": "left",
+   "x": -3.5,
+   "y": -20.0,
+   "lat": 40.08111,
+   "lon": -75.20722
+  },
+  "90218": {
+   "name": "Allegheny",
+   "label": "Allegheny",
+   "side": "above-left",
+   "x": 0.078,
+   "y": -5.0,
+   "lat": 40.00361,
+   "lon": -75.16472
+  },
+  "90219": {
+   "name": "East Falls",
+   "label": "East Falls",
+   "side": "above-left",
+   "x": -1.844,
+   "y": -5.0,
+   "lat": 40.01139,
+   "lon": -75.19195
+  },
+  "90220": {
+   "name": "Wissahickon",
+   "label": "Wissahickon",
+   "side": "above-left",
+   "x": -3.766,
+   "y": -5.0,
+   "lat": 40.01667,
+   "lon": -75.21028
+  },
+  "90221": {
+   "name": "Manayunk",
+   "label": "Manayunk",
+   "side": "left",
+   "x": -5.487,
+   "y": -5.487,
+   "lat": 40.02694,
+   "lon": -75.225
+  },
+  "90222": {
+   "name": "Ivy Ridge",
+   "label": "Ivy Ridge",
+   "side": "left",
+   "x": -6.846,
+   "y": -6.846,
+   "lat": 40.03417,
+   "lon": -75.23556
+  },
+  "90223": {
+   "name": "Miquon",
+   "label": "Miquon",
+   "side": "left",
+   "x": -8.205,
+   "y": -8.205,
+   "lat": 40.05861,
+   "lon": -75.26639
+  },
+  "90224": {
+   "name": "Spring Mill",
+   "label": "Spring Mill",
+   "side": "right",
+   "x": -9.564,
+   "y": -9.564,
+   "lat": 40.07417,
+   "lon": -75.28611
+  },
+  "90225": {
+   "name": "Conshohocken",
+   "label": "Conshohocken",
+   "side": "right",
+   "x": -10.923,
+   "y": -10.923,
+   "lat": 40.07328,
+   "lon": -75.310944
+  },
+  "90226": {
+   "name": "Norristown Transit Center",
+   "label": "Norristown TC",
+   "side": "right",
+   "x": -12.282,
+   "y": -12.282,
+   "lat": 40.11278,
+   "lon": -75.34417
+  },
+  "90227": {
+   "name": "Main St",
+   "label": "Main St",
+   "side": "right",
+   "x": -13.641,
+   "y": -13.641,
+   "lat": 40.11722,
+   "lon": -75.34861
+  },
+  "90228": {
+   "name": "Norristown Elm Street",
+   "label": "Elm Street",
+   "side": "right",
+   "x": -15.0,
+   "y": -15.0,
+   "lat": 40.12083,
+   "lon": -75.345
+  },
+  "90711": {
+   "name": "North Philadelphia Amtrak",
+   "label": "North Philadelphia",
+   "side": "below",
+   "x": -4.0,
+   "y": -3.0,
+   "lat": 39.99678,
+   "lon": -75.15511
+  },
+  "90710": {
+   "name": "Bridesburg",
+   "label": "Bridesburg",
+   "side": "below",
+   "x": 4.0,
+   "y": -3.0,
+   "lat": 40.01056,
+   "lon": -75.06973
+  },
+  "90709": {
+   "name": "Tacony",
+   "label": "Tacony",
+   "side": "below",
+   "x": 5.111,
+   "y": -3.0,
+   "lat": 40.02333,
+   "lon": -75.03889
+  },
+  "90708": {
+   "name": "Holmesburg Junction",
+   "label": "Holmesburg Junction",
+   "side": "below",
+   "x": 6.222,
+   "y": -3.0,
+   "lat": 40.03278,
+   "lon": -75.02361
+  },
+  "90707": {
+   "name": "Torresdale",
+   "label": "Torresdale",
+   "side": "below",
+   "x": 7.333,
+   "y": -3.0,
+   "lat": 40.05444,
+   "lon": -74.98444
+  },
+  "90706": {
+   "name": "Cornwells Heights",
+   "label": "Cornwells Heights",
+   "side": "below",
+   "x": 8.444,
+   "y": -3.0,
+   "lat": 40.0709,
+   "lon": -74.95432
+  },
+  "90705": {
+   "name": "Eddington",
+   "label": "Eddington",
+   "side": "below",
+   "x": 9.556,
+   "y": -3.0,
+   "lat": 40.08306,
+   "lon": -74.93361
+  },
+  "90704": {
+   "name": "Croydon",
+   "label": "Croydon",
+   "side": "below",
+   "x": 10.667,
+   "y": -3.0,
+   "lat": 40.09361,
+   "lon": -74.90667
+  },
+  "90703": {
+   "name": "Bristol",
+   "label": "Bristol",
+   "side": "below",
+   "x": 11.778,
+   "y": -3.0,
+   "lat": 40.10472,
+   "lon": -74.85472
+  },
+  "90702": {
+   "name": "Levittown",
+   "label": "Levittown",
+   "side": "below",
+   "x": 12.889,
+   "y": -3.0,
+   "lat": 40.14028,
+   "lon": -74.81695
+  },
+  "90701": {
+   "name": "Trenton Transit Center",
+   "label": "Trenton",
+   "side": "below",
+   "x": 14.0,
+   "y": -3.0,
+   "lat": 40.21851,
+   "lon": -74.75393
+  },
+  "90810": {
+   "name": "North Philadelphia Septa",
+   "label": "North Phila (CHW)",
+   "side": "left",
+   "x": -5.614,
+   "y": -3.0,
+   "lat": 39.99778,
+   "lon": -75.15639
+  },
+  "90809": {
+   "name": "Queen Ln",
+   "label": "Queen Ln",
+   "side": "left",
+   "x": -6.869,
+   "y": -3.869,
+   "lat": 40.02333,
+   "lon": -75.17805
+  },
+  "90808": {
+   "name": "Chelten Av",
+   "label": "Chelten Av",
+   "side": "left",
+   "x": -8.01,
+   "y": -5.01,
+   "lat": 40.03,
+   "lon": -75.18083
+  },
+  "90807": {
+   "name": "Tulpehocken",
+   "label": "Tulpehocken",
+   "side": "left",
+   "x": -9.151,
+   "y": -6.151,
+   "lat": 40.03528,
+   "lon": -75.18694
+  },
+  "90806": {
+   "name": "Upsal",
+   "label": "Upsal",
+   "side": "left",
+   "x": -10.293,
+   "y": -7.293,
+   "lat": 40.0425,
+   "lon": -75.19
+  },
+  "90805": {
+   "name": "Carpenter",
+   "label": "Carpenter",
+   "side": "left",
+   "x": -11.434,
+   "y": -8.434,
+   "lat": 40.05111,
+   "lon": -75.19139
+  },
+  "90804": {
+   "name": "Richard Allen Ln",
+   "label": "Richard Allen Ln",
+   "side": "left",
+   "x": -12.576,
+   "y": -9.576,
+   "lat": 40.0575,
+   "lon": -75.19473
+  },
+  "90803": {
+   "name": "St. Martins",
+   "label": "St. Martins",
+   "side": "left",
+   "x": -13.717,
+   "y": -10.717,
+   "lat": 40.06583,
+   "lon": -75.20444
+  },
+  "90802": {
+   "name": "Highland",
+   "label": "Highland",
+   "side": "left",
+   "x": -14.859,
+   "y": -11.859,
+   "lat": 40.07056,
+   "lon": -75.21111
+  },
+  "90801": {
+   "name": "Chestnut Hill West",
+   "label": "Chestnut Hill West",
+   "side": "left",
+   "x": -16.0,
+   "y": -13.0,
+   "lat": 40.07639,
+   "lon": -75.20834
+  },
+  "90003": {
+   "name": "Wynnefield Av",
+   "label": "Wynnefield Av",
+   "side": "left",
+   "x": -4.667,
+   "y": -0.667,
+   "lat": 39.99,
+   "lon": -75.22556
+  },
+  "90002": {
+   "name": "Bala",
+   "label": "Bala",
+   "side": "left",
+   "x": -5.333,
+   "y": -1.333,
+   "lat": 40.00111,
+   "lon": -75.22778
+  },
+  "90001": {
+   "name": "Cynwyd",
+   "label": "Cynwyd",
+   "side": "left",
+   "x": -6.0,
+   "y": -2.0,
+   "lat": 40.00667,
+   "lon": -75.23167
+  },
+  "90522": {
+   "name": "Overbrook",
+   "label": "Overbrook",
+   "side": "below-left",
+   "x": -5.235,
+   "y": 0.0,
+   "lat": 39.98944,
+   "lon": -75.24944
+  },
+  "90521": {
+   "name": "Merion",
+   "label": "Merion",
+   "side": "below-left",
+   "x": -6.471,
+   "y": 0.0,
+   "lat": 39.99861,
+   "lon": -75.25139
+  },
+  "90520": {
+   "name": "Narberth",
+   "label": "Narberth",
+   "side": "below-left",
+   "x": -7.706,
+   "y": 0.0,
+   "lat": 40.00472,
+   "lon": -75.26139
+  },
+  "90519": {
+   "name": "Wynnewood",
+   "label": "Wynnewood",
+   "side": "above-left",
+   "x": -8.941,
+   "y": 0.0,
+   "lat": 40.00278,
+   "lon": -75.2725
+  },
+  "90518": {
+   "name": "Ardmore",
+   "label": "Ardmore",
+   "side": "above-left",
+   "x": -10.176,
+   "y": 0.0,
+   "lat": 40.00828,
+   "lon": -75.2904
+  },
+  "90517": {
+   "name": "Haverford",
+   "label": "Haverford",
+   "side": "above-left",
+   "x": -11.412,
+   "y": 0.0,
+   "lat": 40.01389,
+   "lon": -75.29972
+  },
+  "90516": {
+   "name": "Bryn Mawr",
+   "label": "Bryn Mawr",
+   "side": "below",
+   "x": -12.647,
+   "y": 0.0,
+   "lat": 40.02195,
+   "lon": -75.31639
+  },
+  "90515": {
+   "name": "Rosemont",
+   "label": "Rosemont",
+   "side": "below",
+   "x": -13.882,
+   "y": 0.0,
+   "lat": 40.02778,
+   "lon": -75.32667
+  },
+  "90514": {
+   "name": "Villanova",
+   "label": "Villanova",
+   "side": "below",
+   "x": -15.118,
+   "y": 0.0,
+   "lat": 40.03833,
+   "lon": -75.34167
+  },
+  "90513": {
+   "name": "Radnor",
+   "label": "Radnor",
+   "side": "below",
+   "x": -16.353,
+   "y": 0.0,
+   "lat": 40.04472,
+   "lon": -75.35889
+  },
+  "90512": {
+   "name": "St. Davids",
+   "label": "St. Davids",
+   "side": "below",
+   "x": -17.588,
+   "y": 0.0,
+   "lat": 40.04389,
+   "lon": -75.3725
+  },
+  "90511": {
+   "name": "Wayne",
+   "label": "Wayne",
+   "side": "below",
+   "x": -18.824,
+   "y": 0.0,
+   "lat": 40.04583,
+   "lon": -75.38667
+  },
+  "90510": {
+   "name": "Strafford",
+   "label": "Strafford",
+   "side": "below",
+   "x": -20.059,
+   "y": 0.0,
+   "lat": 40.04945,
+   "lon": -75.40305
+  },
+  "90509": {
+   "name": "Devon",
+   "label": "Devon",
+   "side": "below",
+   "x": -21.294,
+   "y": 0.0,
+   "lat": 40.04722,
+   "lon": -75.42278
+  },
+  "90508": {
+   "name": "Berwyn",
+   "label": "Berwyn",
+   "side": "below",
+   "x": -22.529,
+   "y": 0.0,
+   "lat": 40.04805,
+   "lon": -75.44222
+  },
+  "90507": {
+   "name": "Daylesford",
+   "label": "Daylesford",
+   "side": "below",
+   "x": -23.765,
+   "y": 0.0,
+   "lat": 40.04306,
+   "lon": -75.46056
+  },
+  "90506": {
+   "name": "Paoli",
+   "label": "Paoli",
+   "side": "left",
+   "x": -25.0,
+   "y": 0.0,
+   "lat": 40.04276,
+   "lon": -75.48376
+  },
+  "90505": {
+   "name": "Malvern",
+   "label": "Malvern",
+   "side": "left",
+   "x": -25.8,
+   "y": 0.8,
+   "lat": 40.03639,
+   "lon": -75.51556
+  },
+  "90504": {
+   "name": "Exton",
+   "label": "Exton",
+   "side": "left",
+   "x": -26.6,
+   "y": 1.6,
+   "lat": 40.01929,
+   "lon": -75.62171
+  },
+  "90503": {
+   "name": "Whitford",
+   "label": "Whitford",
+   "side": "left",
+   "x": -27.4,
+   "y": 2.4,
+   "lat": 40.01472,
+   "lon": -75.63805
+  },
+  "90502": {
+   "name": "Downingtown",
+   "label": "Downingtown",
+   "side": "left",
+   "x": -28.2,
+   "y": 3.2,
+   "lat": 40.00219,
+   "lon": -75.71078
+  },
+  "90501": {
+   "name": "Thorndale",
+   "label": "Thorndale",
+   "side": "left",
+   "x": -29.0,
+   "y": 4.0,
+   "lat": 39.99278,
+   "lon": -75.76361
+  },
+  "90314": {
+   "name": "49th St",
+   "label": "49th St",
+   "side": "left",
+   "x": -4.785,
+   "y": 3.785,
+   "lat": 39.94361,
+   "lon": -75.21667
+  },
+  "90313": {
+   "name": "Angora",
+   "label": "Angora",
+   "side": "left",
+   "x": -5.57,
+   "y": 4.57,
+   "lat": 39.94472,
+   "lon": -75.23861
+  },
+  "90312": {
+   "name": "Fernwood-Yeadon",
+   "label": "Fernwood-Yeadon",
+   "side": "left",
+   "x": -6.356,
+   "y": 5.356,
+   "lat": 39.93972,
+   "lon": -75.25584
+  },
+  "90311": {
+   "name": "Lansdowne",
+   "label": "Lansdowne",
+   "side": "left",
+   "x": -7.141,
+   "y": 6.141,
+   "lat": 39.9375,
+   "lon": -75.27084
+  },
+  "90310": {
+   "name": "Gladstone",
+   "label": "Gladstone",
+   "side": "right",
+   "x": -7.926,
+   "y": 6.926,
+   "lat": 39.93278,
+   "lon": -75.28222
+  },
+  "90309": {
+   "name": "Clifton-Aldan",
+   "label": "Clifton-Aldan",
+   "side": "below",
+   "x": -9.006,
+   "y": 7.0,
+   "lat": 39.92667,
+   "lon": -75.29028
+  },
+  "90308": {
+   "name": "Primos",
+   "label": "Primos",
+   "side": "below",
+   "x": -10.116,
+   "y": 7.0,
+   "lat": 39.92167,
+   "lon": -75.29833
+  },
+  "90307": {
+   "name": "Secane",
+   "label": "Secane",
+   "side": "below",
+   "x": -11.227,
+   "y": 7.0,
+   "lat": 39.91583,
+   "lon": -75.30972
+  },
+  "90306": {
+   "name": "Morton",
+   "label": "Morton",
+   "side": "below",
+   "x": -12.337,
+   "y": 7.0,
+   "lat": 39.90778,
+   "lon": -75.32889
+  },
+  "90305": {
+   "name": "Swarthmore",
+   "label": "Swarthmore",
+   "side": "below",
+   "x": -13.448,
+   "y": 7.0,
+   "lat": 39.90222,
+   "lon": -75.35083
+  },
+  "90304": {
+   "name": "Wallingford",
+   "label": "Wallingford",
+   "side": "below",
+   "x": -14.558,
+   "y": 7.0,
+   "lat": 39.90361,
+   "lon": -75.37194
+  },
+  "90303": {
+   "name": "Moylan-Rose Valley",
+   "label": "Moylan-Rose Valley",
+   "side": "below",
+   "x": -15.669,
+   "y": 7.0,
+   "lat": 39.90611,
+   "lon": -75.38861
+  },
+  "90302": {
+   "name": "Media",
+   "label": "Media",
+   "side": "below",
+   "x": -16.779,
+   "y": 7.0,
+   "lat": 39.91444,
+   "lon": -75.395
+  },
+  "90301": {
+   "name": "Elwyn",
+   "label": "Elwyn",
+   "side": "below",
+   "x": -17.89,
+   "y": 7.0,
+   "lat": 39.9075,
+   "lon": -75.41167
+  },
+  "90300": {
+   "name": "Wawa",
+   "label": "Wawa",
+   "side": "below",
+   "x": -19.0,
+   "y": 7.0,
+   "lat": 39.90068,
+   "lon": -75.45856
+  },
+  "90217": {
+   "name": "Darby",
+   "label": "Darby",
+   "side": "right",
+   "x": -4.0,
+   "y": 4.195,
+   "lat": 39.91306,
+   "lon": -75.25445
+  },
+  "90216": {
+   "name": "Curtis Park",
+   "label": "Curtis Park",
+   "side": "right",
+   "x": -4.0,
+   "y": 5.39,
+   "lat": 39.90805,
+   "lon": -75.265
+  },
+  "90215": {
+   "name": "Sharon Hill",
+   "label": "Sharon Hill",
+   "side": "right",
+   "x": -4.0,
+   "y": 6.585,
+   "lat": 39.90445,
+   "lon": -75.27084
+  },
+  "90214": {
+   "name": "Folcroft",
+   "label": "Folcroft",
+   "side": "right",
+   "x": -4.0,
+   "y": 7.78,
+   "lat": 39.90055,
+   "lon": -75.27972
+  },
+  "90213": {
+   "name": "Glenolden",
+   "label": "Glenolden",
+   "side": "right",
+   "x": -4.0,
+   "y": 8.975,
+   "lat": 39.89639,
+   "lon": -75.29
+  },
+  "90212": {
+   "name": "Norwood",
+   "label": "Norwood",
+   "side": "right",
+   "x": -4.0,
+   "y": 10.17,
+   "lat": 39.89167,
+   "lon": -75.30167
+  },
+  "90211": {
+   "name": "Prospect Park",
+   "label": "Prospect Park",
+   "side": "right",
+   "x": -4.0,
+   "y": 11.364,
+   "lat": 39.88833,
+   "lon": -75.30889
+  },
+  "90210": {
+   "name": "Ridley Park",
+   "label": "Ridley Park",
+   "side": "right",
+   "x": -4.396,
+   "y": 12.396,
+   "lat": 39.88055,
+   "lon": -75.32222
+  },
+  "90209": {
+   "name": "Crum Lynne",
+   "label": "Crum Lynne",
+   "side": "right",
+   "x": -5.24,
+   "y": 13.24,
+   "lat": 39.87194,
+   "lon": -75.33111
+  },
+  "90208": {
+   "name": "Eddystone",
+   "label": "Eddystone",
+   "side": "right",
+   "x": -6.085,
+   "y": 14.085,
+   "lat": 39.85722,
+   "lon": -75.34222
+  },
+  "90207": {
+   "name": "Chester Transit Center",
+   "label": "Chester TC",
+   "side": "right",
+   "x": -6.93,
+   "y": 14.93,
+   "lat": 39.84972,
+   "lon": -75.36
+  },
+  "90206": {
+   "name": "Highland Av",
+   "label": "Highland Av",
+   "side": "right",
+   "x": -7.775,
+   "y": 15.775,
+   "lat": 39.83361,
+   "lon": -75.39333
+  },
+  "90205": {
+   "name": "Marcus Hook",
+   "label": "Marcus Hook",
+   "side": "right",
+   "x": -8.62,
+   "y": 16.62,
+   "lat": 39.82167,
+   "lon": -75.41944
+  },
+  "90204": {
+   "name": "Claymont Transit Center",
+   "label": "Claymont",
+   "side": "right",
+   "x": -9.465,
+   "y": 17.465,
+   "lat": 39.804167,
+   "lon": -75.446111
+  },
+  "90203": {
+   "name": "Wilmington",
+   "label": "Wilmington",
+   "side": "right",
+   "x": -10.31,
+   "y": 18.31,
+   "lat": 39.73726,
+   "lon": -75.55109
+  },
+  "90202": {
+   "name": "Churchman's Crossing",
+   "label": "Churchman's Crossing",
+   "side": "right",
+   "x": -11.155,
+   "y": 19.155,
+   "lat": 39.695,
+   "lon": -75.6725
+  },
+  "90201": {
+   "name": "Newark DE",
+   "label": "Newark DE",
+   "side": "right",
+   "x": -12.0,
+   "y": 20.0,
+   "lat": 39.66969,
+   "lon": -75.75351
+  },
+  "90405": {
+   "name": "Eastwick",
+   "label": "Eastwick",
+   "side": "below",
+   "x": -1.7,
+   "y": 3.0,
+   "lat": 39.89278,
+   "lon": -75.24389
+  },
+  "90404": {
+   "name": "Airport Terminal A",
+   "label": "Terminal A",
+   "side": "right",
+   "x": 0.5,
+   "y": 3.1,
+   "lat": 39.87611,
+   "lon": -75.24528
+  },
+  "90403": {
+   "name": "Airport Terminal B",
+   "label": "Terminal B",
+   "side": "right",
+   "x": 0.5,
+   "y": 5.4,
+   "lat": 39.87722,
+   "lon": -75.24139
+  },
+  "90402": {
+   "name": "Airport Terminals C & D",
+   "label": "Terminals C & D",
+   "side": "right",
+   "x": 0.5,
+   "y": 7.7,
+   "lat": 39.87806,
+   "lon": -75.24
+  },
+  "90401": {
+   "name": "Airport Terminals E & F",
+   "label": "Terminals E & F",
+   "side": "right",
+   "x": 0.5,
+   "y": 10.0,
+   "lat": 39.87944,
+   "lon": -75.23972
+  }
+ },
+ "lines": {
+  "LAN": {
+   "name": "Lansdale/Doylestown",
+   "color": "#ff3b30",
+   "stops": [
+    "90406",
+    "90004",
+    "90005",
+    "90006",
+    "90007",
+    "90008",
+    "90009",
+    "90407",
+    "90408",
+    "90409",
+    "90410",
+    "90411",
+    "90523",
+    "90524",
+    "90525",
+    "90526",
+    "90527",
+    "90528",
+    "90529",
+    "90530",
+    "90531",
+    "90539",
+    "90532",
+    "90533",
+    "90534",
+    "90535",
+    "90536",
+    "90537",
+    "90538"
+   ]
+  },
+  "WAR": {
+   "name": "Warminster",
+   "color": "#ff9500",
+   "stops": [
+    "90406",
+    "90004",
+    "90005",
+    "90006",
+    "90007",
+    "90009",
+    "90407",
+    "90408",
+    "90409",
+    "90410",
+    "90411",
+    "90412",
+    "90413",
+    "90414",
+    "90415",
+    "90416",
+    "90417"
+   ]
+  },
+  "WTR": {
+   "name": "West Trenton",
+   "color": "#9d5cff",
+   "stops": [
+    "90406",
+    "90004",
+    "90005",
+    "90006",
+    "90007",
+    "90407",
+    "90408",
+    "90409",
+    "90410",
+    "90315",
+    "90316",
+    "90317",
+    "90318",
+    "90319",
+    "90320",
+    "90321",
+    "90322",
+    "90323",
+    "90324",
+    "90325",
+    "90326",
+    "90327"
+   ]
+  },
+  "FOX": {
+   "name": "Fox Chase",
+   "color": "#00c3ff",
+   "stops": [
+    "90406",
+    "90004",
+    "90005",
+    "90006",
+    "90007",
+    "90009",
+    "90811",
+    "90812",
+    "90813",
+    "90814",
+    "90815"
+   ]
+  },
+  "CHE": {
+   "name": "Chestnut Hill East",
+   "color": "#1fd65f",
+   "stops": [
+    "90406",
+    "90004",
+    "90005",
+    "90006",
+    "90007",
+    "90009",
+    "90712",
+    "90713",
+    "90714",
+    "90715",
+    "90716",
+    "90717",
+    "90718",
+    "90719",
+    "90720"
+   ]
+  },
+  "NOR": {
+   "name": "Manayunk/Norristown",
+   "color": "#ff3fd0",
+   "stops": [
+    "90406",
+    "90004",
+    "90005",
+    "90006",
+    "90007",
+    "90008",
+    "90218",
+    "90219",
+    "90220",
+    "90221",
+    "90222",
+    "90223",
+    "90224",
+    "90225",
+    "90226",
+    "90227",
+    "90228"
+   ]
+  },
+  "TRE": {
+   "name": "Trenton",
+   "color": "#3d6bff",
+   "stops": [
+    "90007",
+    "90006",
+    "90005",
+    "90004",
+    "90711",
+    "90710",
+    "90709",
+    "90708",
+    "90707",
+    "90706",
+    "90705",
+    "90704",
+    "90703",
+    "90702",
+    "90701"
+   ]
+  },
+  "CHW": {
+   "name": "Chestnut Hill West",
+   "color": "#a3ff12",
+   "stops": [
+    "90007",
+    "90006",
+    "90005",
+    "90004",
+    "90810",
+    "90809",
+    "90808",
+    "90807",
+    "90806",
+    "90805",
+    "90804",
+    "90803",
+    "90802",
+    "90801"
+   ]
+  },
+  "CYN": {
+   "name": "Cynwyd",
+   "color": "#c8a2ff",
+   "stops": [
+    "90005",
+    "90004",
+    "90003",
+    "90002",
+    "90001"
+   ]
+  },
+  "PAO": {
+   "name": "Paoli/Thorndale",
+   "color": "#ffd60a",
+   "stops": [
+    "90007",
+    "90006",
+    "90005",
+    "90004",
+    "90522",
+    "90521",
+    "90520",
+    "90519",
+    "90518",
+    "90517",
+    "90516",
+    "90515",
+    "90514",
+    "90513",
+    "90512",
+    "90511",
+    "90510",
+    "90509",
+    "90508",
+    "90507",
+    "90506",
+    "90505",
+    "90504",
+    "90503",
+    "90502",
+    "90501"
+   ]
+  },
+  "MED": {
+   "name": "Media/Wawa",
+   "color": "#00e5c0",
+   "stops": [
+    "90007",
+    "90006",
+    "90005",
+    "90004",
+    "90406",
+    "90314",
+    "90313",
+    "90312",
+    "90311",
+    "90310",
+    "90309",
+    "90308",
+    "90307",
+    "90306",
+    "90305",
+    "90304",
+    "90303",
+    "90302",
+    "90301",
+    "90300"
+   ]
+  },
+  "WIL": {
+   "name": "Wilmington/Newark",
+   "color": "#ff7a9c",
+   "stops": [
+    "90007",
+    "90006",
+    "90005",
+    "90004",
+    "90406",
+    "90217",
+    "90216",
+    "90215",
+    "90214",
+    "90213",
+    "90212",
+    "90211",
+    "90210",
+    "90209",
+    "90208",
+    "90207",
+    "90206",
+    "90205",
+    "90204",
+    "90203",
+    "90202",
+    "90201"
+   ]
+  },
+  "AIR": {
+   "name": "Airport",
+   "color": "#e0b080",
+   "stops": [
+    "90007",
+    "90006",
+    "90005",
+    "90004",
+    "90406",
+    "90405",
+    "90404",
+    "90403",
+    "90402",
+    "90401"
+   ]
+  }
+ },
+ "tracks": [
+  [
+   [
+    -4,
+    3
+   ],
+   [
+    -4,
+    0
+   ],
+   [
+    -2,
+    0
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    2,
+    -2
+   ]
+  ],
+  [
+   [
+    2,
+    -2
+   ],
+   [
+    2,
+    -5
+   ],
+   [
+    2,
+    -8
+   ],
+   [
+    2,
+    -10
+   ],
+   [
+    2,
+    -16
+   ],
+   [
+    2,
+    -26
+   ],
+   [
+    2,
+    -28
+   ],
+   [
+    8,
+    -28
+   ]
+  ],
+  [
+   [
+    2.0,
+    -16.0
+   ],
+   [
+    8,
+    -22
+   ]
+  ],
+  [
+   [
+    2.0,
+    -14.5
+   ],
+   [
+    5.5,
+    -14.5
+   ],
+   [
+    15,
+    -24
+   ]
+  ],
+  [
+   [
+    2.0,
+    -8.0
+   ],
+   [
+    3.5,
+    -9.5
+   ],
+   [
+    9,
+    -9.5
+   ]
+  ],
+  [
+   [
+    2.0,
+    -8.0
+   ],
+   [
+    -3.5,
+    -8
+   ],
+   [
+    -3.5,
+    -20
+   ]
+  ],
+  [
+   [
+    2.0,
+    -5.0
+   ],
+   [
+    -5,
+    -5
+   ],
+   [
+    -15,
+    -15
+   ]
+  ],
+  [
+   [
+    -4,
+    0
+   ],
+   [
+    -4,
+    -3
+   ],
+   [
+    4,
+    -3
+   ],
+   [
+    14,
+    -3
+   ]
+  ],
+  [
+   [
+    -4.0,
+    -3.0
+   ],
+   [
+    -6,
+    -3
+   ],
+   [
+    -16,
+    -13
+   ]
+  ],
+  [
+   [
+    -4,
+    0
+   ],
+   [
+    -6,
+    -2
+   ]
+  ],
+  [
+   [
+    -4,
+    0
+   ],
+   [
+    -25,
+    0
+   ],
+   [
+    -29,
+    4
+   ]
+  ],
+  [
+   [
+    -4,
+    3
+   ],
+   [
+    -8,
+    7
+   ],
+   [
+    -19,
+    7
+   ]
+  ],
+  [
+   [
+    -4,
+    3
+   ],
+   [
+    -4,
+    12
+   ],
+   [
+    -12,
+    20
+   ]
+  ],
+  [
+   [
+    -4,
+    3
+   ],
+   [
+    0.5,
+    3
+   ],
+   [
+    0.5,
+    10
+   ]
+  ]
+ ]
+}
