@@ -135,14 +135,24 @@
       function getJSON(url, done, failed) {
         var request = new XMLHttpRequest();
         request.open("GET", url);
+        request.timeout = 15000;
         request.onload = function () {
+          var data = null;
           if (request.status === 200) {
-            done(JSON.parse(request.responseText));
+            try {
+              data = JSON.parse(request.responseText);
+            } catch (error) {
+              data = null;
+            }
+          }
+          if (data) {
+            done(data);
           } else {
             failed();
           }
         };
         request.onerror = failed;
+        request.ontimeout = failed;
         request.send();
       }
 
@@ -317,12 +327,16 @@
         getJSON(
           "/trains",
           function (data) {
-            settings.refresh_seconds = data.refresh_seconds;
-            settings.time_format = data.time_format;
-            document.body.className = data.look;
-            light(data.trains);
-            setNotice(data.stale ? (data.updated ? "Delayed data" : "Waiting for SEPTA") : "");
-            schedule();
+            // Schedule the next refresh even if drawing fails.
+            try {
+              settings.refresh_seconds = data.refresh_seconds;
+              settings.time_format = data.time_format;
+              document.body.className = data.look;
+              light(data.trains);
+              setNotice(data.stale ? (data.updated ? "Delayed data" : "Waiting for SEPTA") : "");
+            } finally {
+              schedule();
+            }
           },
           function () {
             setNotice("Offline");

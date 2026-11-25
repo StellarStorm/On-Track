@@ -478,30 +478,59 @@
         }
       }
 
-      function refresh() {
-        fetch("/departures", { cache: "no-store" })
-          .then(function (response) {
-            if (!response.ok) {
-              throw new Error("HTTP " + response.status);
+      // XMLHttpRequest rather than fetch(), which Safari only has from
+      // iOS 10.3; without it the board never loads on older iPads.
+      function getJSON(url, done, failed) {
+        var request = new XMLHttpRequest();
+        request.open("GET", url);
+        request.timeout = 15000;
+        request.onload = function () {
+          var data = null;
+          if (request.status === 200) {
+            try {
+              data = JSON.parse(request.responseText);
+            } catch (error) {
+              data = null;
             }
-            return response.json();
-          })
-          .then(function (data) {
-            applySettings(data);
-            var waiting = data.stale && !data.updated;
-            showRows(
-              data.departures,
-              waiting ? "WAITING FOR SEPTA" : "NO DEPARTURES LISTED"
-            );
-            setNotice(data.stale && data.updated ? "DELAYED DATA" : "");
-          })
-          .catch(function () {
+          }
+          if (data) {
+            done(data);
+          } else {
+            failed();
+          }
+        };
+        request.onerror = failed;
+        request.ontimeout = failed;
+        request.send();
+      }
+
+      function refresh() {
+        getJSON(
+          "/departures",
+          function (data) {
+            // Schedule the next refresh even if drawing fails.
+            try {
+              applySettings(data);
+              var waiting = data.stale && !data.updated;
+              showRows(
+                data.departures,
+                waiting ? "WAITING FOR SEPTA" : "NO DEPARTURES LISTED"
+              );
+              setNotice(data.stale && data.updated ? "DELAYED DATA" : "");
+            } finally {
+              schedule();
+            }
+          },
+          function () {
             setNotice("OFFLINE");
-          })
-          .then(function () {
-            clearTimeout(timer);
-            timer = setTimeout(refresh, settings.refresh_seconds * 1000);
-          });
+            schedule();
+          }
+        );
+      }
+
+      function schedule() {
+        clearTimeout(timer);
+        timer = setTimeout(refresh, settings.refresh_seconds * 1000);
       }
 
       function tick() {
