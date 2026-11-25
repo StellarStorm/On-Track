@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>On Track</title>
+    <style>
+      @font-face {
+        font-family: "Doto";
+        src: url("/static/fonts/doto-latin-700-normal.woff2") format("woff2");
+        font-weight: 700;
+      }
+      /*
+       * Doto draws every glyph on a grid of round dots spaced 0.1em apart,
+       * 6 dots wide (0.6em = 1ch). The unlit-LED background uses the same
+       * spacing (--dot), and every size and gap below is a whole number of
+       * dots, so the lit dots of the text land exactly on the unlit ones.
+       * layout() keeps the font size a multiple of 10 device pixels.
+       */
+      /* Colors taken from the Center City platform boards. */
+      :root {
+        --bar: #0b46d6;
+        --rule: #d6ff3c;
+        --text: #cfe8ff;
+        --white: #f2f7ff;
+        --cyan: #1ee0ff;
+        --green: #2cff66;
+        --amber: #ffb01f;
+        --red: #ff3030;
+        --yellow: #ecff3a;
+        --dot: 5px;
+        /* Row heights of 1.3em, 1.5em, 1.7em... put the baseline on a dot. */
+        --row-height: 1.3;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #05060b;
+      }
+      body {
+        font-family: "Doto", monospace;
+        /* Doto's 700 weight keeps the dots apart, like LEDs. */
+        font-weight: 700;
+        color: var(--text);
+        -webkit-text-size-adjust: 100%;
+        cursor: none;
+      }
+      #board {
+        position: relative;
+        height: 100%;
+        box-sizing: border-box;
+        /*
+         * Fills the screen. layout() sets the padding: a 6-dot margin at the
+         * sides and 4 dots at the bottom, plus whatever is left over from the
+         * dot grid, so the rows span a whole number of dots.
+         */
+        padding: 0 0.6em 0.4em;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        background-color: #05060b;
+        /* Unlit LEDs. */
+        background-image: radial-gradient(
+          circle,
+          rgba(42, 50, 82, 0.55) 0,
+          rgba(42, 50, 82, 0.55) 40%,
+          transparent 52%
+        );
+        background-size: var(--dot) var(--dot);
+      }
+      .glow {
+        /* A soft halo, kept wide and faint so the dot edges stay sharp. */
+        text-shadow: 0 0 0.25em rgba(207, 232, 255, 0.18);
+      }
+      header,
+      footer,
+      .message {
+        /* Centered by centerOnGrid(), so the text starts on a dot. */
+        white-space: nowrap;
+      }
+      .centered {
+        display: inline-block;
+      }
+      header {
+        /* Runs edge to edge; layout() sets the negative side margins. */
+        margin: 0 -0.6em;
+        background: var(--bar);
+        color: var(--rule);
+        line-height: 1.3;
+        border-bottom: 0.1em solid var(--rule);
+        box-shadow: 0 0 0.5em rgba(11, 70, 214, 0.55);
+        white-space: nowrap;
+        overflow: hidden;
+        position: relative;
+      }
+      #title {
+        overflow: hidden;
+        vertical-align: top;
+      }
+      /*
+       * The SEPTA mark at the right end of the bar, as on the station signs.
+       * layout() lines its right edge up with the rows' right edge.
+       */
+      #brand {
+        position: absolute;
+        top: 0;
+        color: var(--white);
+      }
+      /* The logo is drawn in dots, 0.1em apart like the lettering. */
+      #logo {
+        display: inline-block;
+        vertical-align: top;
+        margin-top: 0.1em;
+      }
+      #wordmark {
+        margin-left: 0.3em;
+      }
+      #rows {
+        -webkit-flex: 1;
+        flex: 1;
+        padding-top: 0.2em;
+        overflow: hidden;
+      }
+      .row {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        line-height: var(--row-height);
+        white-space: nowrap;
+      }
+      .row span {
+        display: block;
+        overflow: hidden;
+        margin-right: 0.4em;
+      }
+      .row span:last-child {
+        margin-right: 0;
+      }
+      .time {
+        width: 5ch;
+        text-align: right;
+      }
+      .destination {
+        -webkit-flex: 1;
+        flex: 1;
+        min-width: 0;
+        text-overflow: clip;
+        padding-left: 0.2em;
+      }
+      .train {
+        width: 4ch;
+        text-align: right;
+        color: var(--white);
+      }
+      .service {
+        width: 3ch;
+        color: var(--cyan);
+      }
+      .status {
+        width: 9ch;
+        text-align: right;
+      }
+      .track {
+        width: 3ch;
+        text-align: right;
+      }
+      /*
+       * Portrait: each departure takes two lines, time, destination and
+       * track above, then train, service and status lined up under the
+       * destination. layout() sets --row-gap, the space between departures.
+       */
+      .portrait .row {
+        display: block;
+        line-height: 1.3;
+        margin-bottom: var(--row-gap);
+      }
+      .line {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+      }
+      .details {
+        /* The time column, its gap and the destination's indent. */
+        padding-left: 3.6em;
+      }
+      .details .train {
+        text-align: left;
+      }
+      .details .status {
+        -webkit-flex: 1;
+        flex: 1;
+        width: auto;
+      }
+      .on-time {
+        color: var(--green);
+      }
+      .late {
+        color: var(--amber);
+      }
+      .very-late,
+      .alert {
+        color: var(--red);
+      }
+      .changed {
+        color: var(--yellow);
+        -webkit-animation: blink 1.2s steps(1) infinite;
+        animation: blink 1.2s steps(1) infinite;
+      }
+      @-webkit-keyframes blink {
+        50% {
+          opacity: 0.15;
+        }
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0.15;
+        }
+      }
+      .message {
+        padding-top: 1em;
+      }
+      footer {
+        line-height: 1.3;
+        white-space: nowrap;
+      }
+      #date {
+        color: var(--white);
+        margin-right: 1ch;
+      }
+      #clock {
+        color: var(--yellow);
+      }
+      #notice {
+        color: var(--amber);
+        margin-left: 1ch;
+      }
+      /* Portrait has no room for the date beside a notice. */
+      .portrait .noticed #date {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="board">
+      <header class="glow">
+        <span id="title" class="centered">&nbsp;</span
+        ><span id="brand"><span id="wordmark">SEPTA</span></span>
+      </header>
+      <div id="rows"></div>
+      <footer class="glow">
+        <span class="centered"
+          ><span id="date"></span><span id="clock"></span
+          ><span id="notice"></span
+        ></span>
+      </footer>
+    </div>
+    <script>
+      // Kept to older JavaScript so the page runs on old iPads.
+      var VERY_LATE_MINUTES = 5;
+      var RELOAD_HOURS = 6;
+      var settings = { rows: 6, refresh_seconds: 30, time_format: "12" };
+      var timer = null;
+      // Size of one LED dot in CSS pixels; set by layout().
+      var dot = 5;
+      // Lines of text besides the rows, in em: header and its rule, the gap
+      // above the rows, the footer, and the board's bottom padding.
+      var FIXED_LINES = 1.3 + 0.1 + 0.2 + 1.3 + 0.4;
+      // Widest row in em: time + destination + train + service + status +
+      // track at 0.6em per character, 5 gaps of 0.4em, the destination's
+      // 0.2em indent and the board's side padding.
+      var ROW_WIDTH = (5 + 16 + 4 + 3 + 9 + 3) * 0.6 + 5 * 0.4 + 0.2 + 1.2;
+      // The same for a portrait departure's top line: time + destination +
+      // track, 2 gaps, the indent and the side padding. Its second line,
+      // and a short date with the clock, are narrower.
+      var PORTRAIT_WIDTH = (5 + 16 + 3) * 0.6 + 2 * 0.4 + 0.2 + 1.2;
+      // Height of a portrait departure in em: two lines and the smallest gap.
+      var PORTRAIT_ROW = 2 * 1.3 + 0.4;
+      // LOGO START: written by scripts/logo_dots.py
+      var LOGO = [
+        "bbbbwwwwwwrrrrr",
+        "bbbwwwwwrrrrrrr",
+        "bbwwwwwrrrrrrrr",
+        "bbwwwwrrrrrrrrr",
+        "bbwwwwrwwwwrrrr",
+        "bbbwwwwrwwwwrrr",
+        "bbbbwwwwrwwwwrr",
+        "bbbbbbbbbwwwwrr",
+        "bbbbbbbbwwwwwrr",
+        "bbbbbbbwwwwwrrr",
+        "bbbbbwwwwwwrrrr",
+      ];
+      var LOGO_COLORS = { w: "#f2f7ff", r: "#ff4a2a", b: "#1d2a6b" };
+      // LOGO END
+      // Where the rows start and end, in CSS pixels; set by layout().
+      var rowsLeft = 0;
+      var rowsRight = 0;
+      // Whether the board uses the two-line portrait layout; set by layout().
+      var portrait = false;
+      // The last departures shown, so a switch of layout can redraw them.
+      var shown = null;
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) {
+          node.className = className;
+        }
+        node.textContent = text || "";
+        return node;
+      }
+
+      function statusClass(departure) {
+        var late = departure.minutes_late;
+        if (late === null || late === undefined) {
+          return departure.status ? "alert" : "";
+        }
+        if (late === 0) {
+          return "on-time";
+        }
+        return late >= VERY_LATE_MINUTES ? "very-late" : "late";
+      }
+
+      function append(parent, children) {
+        for (var i = 0; i < children.length; i++) {
+          parent.appendChild(children[i]);
+        }
+        return parent;
+      }
+
+      function rowFor(departure) {
+        var time = el("span", "time", departure.time);
+        var destination = el("span", "destination", departure.destination);
+        var train = el("span", "train", departure.train);
+        var service = el("span", "service", departure.service);
+        var status = el(
+          "span",
+          "status " + statusClass(departure),
+          departure.status
+        );
+        var track = el(
+          "span",
+          "track" + (departure.track_changed ? " changed" : ""),
+          departure.track
+        );
+        var row = el("div", "row glow");
+        if (!portrait) {
+          return append(row, [time, destination, train, service, status, track]);
+        }
+        return append(row, [
+          append(el("div", "line"), [time, destination, track]),
+          append(el("div", "line details"), [train, service, status]),
+        ]);
+      }
+
+      function showRows(departures, emptyText) {
+        shown = { departures: departures, emptyText: emptyText };
+        var rows = document.getElementById("rows");
+        while (rows.firstChild) {
+          rows.removeChild(rows.firstChild);
+        }
+        if (!departures.length) {
+          var message = el("div", "message glow");
+          message.appendChild(el("span", "centered", emptyText));
+          rows.appendChild(message);
+          centerOnGrid(message);
+          return;
+        }
+        for (var i = 0; i < departures.length; i++) {
+          rows.appendChild(rowFor(departures[i]));
+        }
+      }
+
+      function setNotice(text) {
+        document.getElementById("notice").textContent = text;
+        var footer = document.querySelector("footer");
+        footer.className = "glow" + (text ? " noticed" : "");
+        centerOnGrid(footer);
+      }
+
+      // Center a line of text with a left indent of whole dots. Plain
+      // text-align: center can start the text between two LEDs.
+      function centerOnGrid(box) {
+        box.style.paddingLeft = "0";
+        var free = box.clientWidth - box.firstElementChild.offsetWidth;
+        var dots = Math.max(0, Math.floor(free / 2 / dot));
+        box.style.paddingLeft = dots * dot + "px";
+      }
+
+      // Draw the logo as LED dots, one square per dot, sized in em so it
+      // scales with the lettering.
+      function drawLogo() {
+        var ns = "http://www.w3.org/2000/svg";
+        var columns = LOGO[0].length;
+        var svg = document.createElementNS(ns, "svg");
+        svg.setAttribute("id", "logo");
+        svg.setAttribute("viewBox", "0 0 " + columns + " " + LOGO.length);
+        svg.style.width = columns / 10 + "em";
+        svg.style.height = LOGO.length / 10 + "em";
+        for (var y = 0; y < LOGO.length; y++) {
+          for (var x = 0; x < columns; x++) {
+            var color = LOGO_COLORS[LOGO[y].charAt(x)];
+            if (!color) {
+              continue;
+            }
+            var led = document.createElementNS(ns, "rect");
+            led.setAttribute("x", x + 0.125);
+            led.setAttribute("y", y + 0.125);
+            led.setAttribute("width", 0.75);
+            led.setAttribute("height", 0.75);
+            led.setAttribute("fill", color);
+            svg.appendChild(led);
+          }
+        }
+        var brand = document.getElementById("brand");
+        brand.insertBefore(svg, brand.firstChild);
+      }
+
+      // Center the title in the bar, keeping it a character's width clear of
+      // the SEPTA mark at the right. If the title is too long, move it left;
+      // if it still doesn't fit, drop the word SEPTA and keep the logo, and
+      // as a last resort clip the title.
+      function placeTitle() {
+        var wordmark = document.getElementById("wordmark");
+        wordmark.style.display = "";
+        if (!fitTitle(false)) {
+          wordmark.style.display = "none";
+          fitTitle(true);
+        }
+      }
+
+      function fitTitle(clip) {
+        var header = document.querySelector("header");
+        var title = document.getElementById("title");
+        var brand = document.getElementById("brand");
+        // Widths from getBoundingClientRect, not offsetWidth, which rounds
+        // to whole pixels when a dot is a fraction of one.
+        var brandWidth = brand.getBoundingClientRect().width;
+        brand.style.left = rowsRight - brandWidth + "px";
+        var limit = rowsRight - brandWidth - 6 * dot;
+        title.style.maxWidth = "";
+        centerOnGrid(header);
+        var width = title.getBoundingClientRect().width;
+        var left = parseFloat(header.style.paddingLeft);
+        if (left + width > limit) {
+          left = Math.floor((limit - width) / dot) * dot;
+        }
+        if (left >= rowsLeft) {
+          header.style.paddingLeft = left + "px";
+          return true;
+        }
+        if (!clip) {
+          return false;
+        }
+        header.style.paddingLeft = rowsLeft + "px";
+        title.style.maxWidth = Math.max(0, limit - rowsLeft) + "px";
+        return true;
+      }
+
+      function applySettings(data) {
+        var changed = data.rows !== settings.rows;
+        settings.rows = data.rows;
+        settings.refresh_seconds = data.refresh_seconds;
+        settings.time_format = data.time_format;
+        document.getElementById("title").textContent = data.title;
+        placeTitle();
+        if (changed) {
+          layout();
+        }
+      }
+
+      function refresh() {
+        fetch("/departures", { cache: "no-store" })
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error("HTTP " + response.status);
+            }
+            return response.json();
+          })
+          .then(function (data) {
+            applySettings(data);
+            var waiting = data.stale && !data.updated;
+            showRows(
+              data.departures,
+              waiting ? "WAITING FOR SEPTA" : "NO DEPARTURES LISTED"
+            );
+            setNotice(data.stale && data.updated ? "DELAYED DATA" : "");
+          })
+          .catch(function () {
+            setNotice("OFFLINE");
+          })
+          .then(function () {
+            clearTimeout(timer);
+            timer = setTimeout(refresh, settings.refresh_seconds * 1000);
+          });
+      }
+
+      function tick() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = ("0" + now.getMinutes()).slice(-2);
+        var clock;
+        if (settings.time_format === "24") {
+          clock = ("0" + hours).slice(-2) + ":" + minutes;
+        } else {
+          clock =
+            (hours % 12 || 12) + ":" + minutes + (hours < 12 ? " AM" : " PM");
+        }
+        document.getElementById("clock").textContent = clock;
+        document.getElementById("date").textContent = now.toLocaleDateString(
+          "en-US",
+          portrait
+            ? { month: "short", day: "numeric" }
+            : { month: "long", day: "numeric", year: "numeric" }
+        );
+        centerOnGrid(document.querySelector("footer"));
+      }
+
+      // Size the text so the header, every row and the footer fill the
+      // screen, and the widest row fits across it. The font size is always
+      // 10 dots, and a dot is a whole number of device pixels, so the
+      // font's dots render crisply and line up with the unlit LEDs.
+      //
+      // The board uses whichever layout gives the bigger text: one line per
+      // departure on wide screens, two on tall ones such as an upright
+      // phone or iPad.
+      function layout() {
+        var ratio = window.devicePixelRatio || 1;
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        var wide = Math.min(
+          height / (settings.rows * 1.3 + FIXED_LINES),
+          width / ROW_WIDTH
+        );
+        var tall = Math.min(
+          height / (settings.rows * PORTRAIT_ROW + FIXED_LINES),
+          width / PORTRAIT_WIDTH
+        );
+        var wasPortrait = portrait;
+        portrait = tall > wide;
+        document.body.className = portrait ? "portrait" : "";
+        var devicePixels = Math.floor((Math.max(wide, tall) * ratio) / 10);
+        dot = Math.max(1, devicePixels) / ratio;
+        var size = dot * 10;
+
+        var root = document.documentElement;
+        root.style.fontSize = size + "px";
+        document.body.style.fontSize = size + "px";
+        root.style.setProperty("--dot", dot + "px");
+
+        // The board fills the screen, and the dot grid starts at its top
+        // left corner. Give the rows a 6-dot margin on the left and a whole
+        // number of dots of width, and put the screen's leftover fraction of
+        // a dot in the right and bottom padding, so the right-aligned columns
+        // and the footer still land on the grid. The header runs edge to
+        // edge, over the side padding.
+        var side = 6 * dot;
+        var columns = Math.floor((width - 2 * side) / dot);
+        var right = width - side - columns * dot;
+        var gridHeight = Math.floor(height / dot) * dot;
+        var bottom = 4 * dot + (height - gridHeight);
+        document.getElementById("board").style.padding =
+          "0 " + right + "px " + bottom + "px " + side + "px";
+        var header = document.querySelector("header");
+        header.style.marginLeft = -side + "px";
+        header.style.marginRight = -right + "px";
+        rowsLeft = side;
+        rowsRight = side + columns * dot;
+
+        // When width limits the text, spread the rows down the screen rather
+        // than leaving the bottom empty. Row heights step by 0.2em so every
+        // baseline stays on a dot, up to 2.5em so a short board doesn't
+        // scatter its rows.
+        var spare = gridHeight / size - FIXED_LINES;
+        var steps = Math.floor((spare / settings.rows - 1.3) / 0.2 + 1e-6);
+        var lineHeight = 1.3 + 0.2 * Math.max(0, Math.min(6, steps));
+        root.style.setProperty("--row-height", lineHeight.toFixed(1));
+        // Portrait lines keep a 1.3em height, so any gap of whole dots
+        // keeps the baselines on the grid. Up to 2em between departures.
+        var gap = Math.floor((spare / settings.rows - 2 * 1.3) * 10 + 1e-6) / 10;
+        root.style.setProperty(
+          "--row-gap",
+          Math.max(0, Math.min(2, gap)).toFixed(1) + "em"
+        );
+
+        if (portrait !== wasPortrait) {
+          tick();
+          if (shown) {
+            showRows(shown.departures, shown.emptyText);
+          }
+        }
+
+        placeTitle();
+        centerOnGrid(document.querySelector("footer"));
+        var message = document.querySelector(".message");
+        if (message) {
+          centerOnGrid(message);
+        }
+      }
+
+      drawLogo();
+      window.addEventListener("resize", layout);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(layout);
+      }
+      layout();
+      tick();
+      setInterval(tick, 1000);
+      refresh();
+      // Old Safari slowly leaks memory on pages left open for days.
+      setTimeout(function () {
+        window.location.reload();
+      }, RELOAD_HOURS * 3600 * 1000);
+    </script>
+  </body>
+</html>
