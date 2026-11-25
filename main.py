@@ -6,7 +6,7 @@ from pathlib import Path
 import httpx2
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from config import Config, ConfigError
@@ -18,6 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent
 TEMPLATE_DIR = BASE_DIR / 'templates'
 STATIC_DIR = BASE_DIR / 'static'
 MAP_FILE = STATIC_DIR / 'map.json'
+# iOS status bar styles for each map look: "default" is light.
+STATUS_BARS = {'light': 'default', 'dark': 'black'}
 
 try:
     config = Config.load()
@@ -109,7 +111,18 @@ def get_departures(request: Request):
 
 @app.get('/map')
 def map_view():
-    return FileResponse(TEMPLATE_DIR / 'map.html')
+    # iOS reads the status bar style once, when the page opens, so it is
+    # set here rather than by the page's script: a light bar over a light
+    # map, black over a dark one. The page also starts in the right look,
+    # so a dark map doesn't flash light while it loads.
+    page = (TEMPLATE_DIR / 'map.html').read_text()
+    page = page.replace(
+        'content="STATUS_BAR"', f'content="{STATUS_BARS[config.map_look]}"'
+    )
+    page = page.replace(
+        '<body class="LOOK">', f'<body class="{config.map_look}">'
+    )
+    return HTMLResponse(page)
 
 
 @app.get('/trains')
