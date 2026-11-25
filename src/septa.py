@@ -123,6 +123,11 @@ def parse_arrivals(payload: dict, direction: str = 'both') -> list[Departure]:
         (groups,) = payload.values()
         departures = []
         for group in groups:
+            # When no trains are left in one direction (late at night at a
+            # quiet station), SEPTA sends an empty list in place of
+            # {"Southbound": [...]}.
+            if group == []:
+                continue
             for name, trains in group.items():
                 if direction != 'both' and name != DIRECTIONS[direction]:
                     continue

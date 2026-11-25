@@ -134,3 +134,13 @@ def test_board_set_station_fetches_fresh_departures(payload):
     board.set_station('Elkins Park', 'northbound')
     board.snapshot()
     assert client.calls == 2
+
+
+def test_parse_arrivals_allows_a_direction_with_no_trains(payload):
+    # Late at night SEPTA sends [] in place of {"Southbound": [...]}.
+    ((key, groups),) = payload.items()
+    northbound = next(g for g in groups if 'Northbound' in g)
+    departures = parse_arrivals({key: [northbound, []]})
+    assert departures
+    assert {d.direction for d in departures} == {'N'}
+    assert parse_arrivals({key: [[], []]}) == []
