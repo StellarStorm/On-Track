@@ -178,7 +178,8 @@ corners or pinned stations in `LAYOUT` usually fixes them.
 The board uses the [Doto](https://github.com/oliverlalan/Doto) font, under
 the SIL Open Font License (`static/fonts/OFL.txt`). The copies in
 `static/fonts/` (WOFF2, and WOFF for older iPads) are modified: `0` is redrawn as an oval in place of Doto's
-diamond, and `:` `;` `.` `,` use single dots (see
+diamond, `:` `;` `.` `,` use single dots, and every dot is a square on its
+cell's edge, so dots stay separate on low-resolution screens (see
 `scripts/redraw_glyphs.py`).
 
 The SEPTA logo in the title bar is drawn from

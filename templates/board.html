@@ -81,6 +81,10 @@
           transparent 52%
         );
         background-size: var(--dot) var(--dot);
+        /* Centered behind the font's lit dots, which fill the top-left
+           three quarters of each cell rather than its middle. */
+        background-position: calc(var(--dot) * -0.125)
+          calc(var(--dot) * -0.125);
       }
       .glow {
         /* A soft halo, kept wide and faint so the dot edges stay sharp. */
@@ -422,8 +426,10 @@
               continue;
             }
             var led = document.createElementNS(ns, "rect");
-            led.setAttribute("x", x + 0.125);
-            led.setAttribute("y", y + 0.125);
+            // In the top-left of its cell, like the font's dots (see
+            // scripts/redraw_glyphs.py), so its edges fall on whole pixels.
+            led.setAttribute("x", x);
+            led.setAttribute("y", y);
             led.setAttribute("width", 0.75);
             led.setAttribute("height", 0.75);
             led.setAttribute("fill", color);

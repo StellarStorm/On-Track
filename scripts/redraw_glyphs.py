@@ -11,11 +11,19 @@ Running it again gives the same result, so edit the drawings and rerun::
 Doto puts every glyph on a grid of dots 100 font units apart. A glyph is 5
 dots wide; row 0 sits on the baseline, row 6 is the top of a capital, and
 row -1 is below the baseline.
+
+It then reshapes every dot in every glyph into a square filling the top-left
+three quarters of its cell. Doto centers each dot in its cell, so on a
+low-resolution screen, such as the iPad mini's, where a cell is 4 pixels,
+both edges of every dot fall mid-pixel: the half-lit pixels fill in the
+gaps and the dots smear into solid strokes. Squares on the cell edge cover
+whole pixels (3 lit and 1 dark on a 4-pixel cell, 6 and 2 on 8) and keep the
+gaps dark.
 """
 
 from pathlib import Path
 
-from fontTools.pens.recordingPen import RecordingPen
+from fontTools.pens.recordingPen import DecomposingRecordingPen, RecordingPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
@@ -27,6 +35,9 @@ FONT = (
     / 'doto-latin-700-normal.woff2'
 )
 GRID = 100
+# Width of a reshaped dot, in font units. 75 keeps Doto's proportions and is
+# a whole number of pixels when a cell is 4 or 8 pixels.
+DOT = 75
 
 # Each drawing lists its rows from top to bottom. The last row of a drawing
 # sits on the row given with it: 0 for the baseline, -1 for a descender.
@@ -119,6 +130,51 @@ def one_dot(font: TTFont) -> tuple[list[tuple], int, int]:
     return dot, column, row
 
 
+def square_dots(font: TTFont) -> int:
+    """Reshape every dot in the font into a square on its cell's edge.
+
+    Returns the number of glyphs changed. A glyph made of anything but dots
+    (none in Doto, apart from .notdef) is left alone.
+    """
+    glyph_set = font.getGlyphSet()
+    glyf = font['glyf']
+    hmtx = font['hmtx']
+    changed = 0
+    for name in font.getGlyphOrder():
+        if name == '.notdef':
+            continue
+        recording = DecomposingRecordingPen(glyph_set)
+        glyph_set[name].draw(recording)
+        dots = contours(recording)
+        if not dots:
+            continue
+        sizes = []
+        for dot in dots:
+            points = [point for _, args in dot for point in args]
+            xs = [x for x, _ in points]
+            ys = [y for _, y in points]
+            sizes.append(max(max(xs) - min(xs), max(ys) - min(ys)))
+        if max(sizes) > GRID:
+            print(f'Left {name} alone: it is not made of dots')
+            continue
+        pen = TTGlyphPen(None)
+        for column, row in sorted({cell(dot) for dot in dots}):
+            left, top = column * GRID, (row + 1) * GRID
+            # Clockwise, as TrueType expects for an outline.
+            pen.moveTo((left, top - DOT))
+            pen.lineTo((left, top))
+            pen.lineTo((left + DOT, top))
+            pen.lineTo((left + DOT, top - DOT))
+            pen.closePath()
+        glyph = pen.glyph()
+        glyph.recalcBounds(glyf)
+        glyf[name] = glyph
+        width, _ = hmtx[name]
+        hmtx[name] = (width, glyph.xMin)
+        changed += 1
+    return changed
+
+
 def redraw(path: Path) -> None:
     # Keep the saved date, so rerunning leaves the files byte-for-byte the same.
     font = TTFont(path, recalcTimestamp=False)
@@ -140,8 +196,10 @@ def redraw(path: Path) -> None:
         glyf[name] = glyph
         width, _ = hmtx[name]
         hmtx[name] = (width, glyph.xMin)
+    count = square_dots(font)
     font.save(path)
-    print(f'Redrew {"".join(DRAWINGS)} in {path.name}')
+    print(f'Redrew {"".join(DRAWINGS)} and squared the dots of {count} glyphs')
+    print(f'Wrote {path.name}')
     # The same font as WOFF, for browsers without WOFF2.
     copy = path.with_suffix('.woff')
     font.flavor = 'woff'
