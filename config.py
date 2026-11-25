@@ -85,7 +85,17 @@ class Config(BaseSettings):
     @property
     def board_title(self) -> str:
         """The header text: the title setting, or the station's short name."""
-        return self.title or self.station.removesuffix(' Station')
+        return self.title_for(self.station)
+
+    def title_for(self, station: str) -> str:
+        """The header text for a station.
+
+        The title setting names the configured station, so it is used only
+        for that one; any other station shows its short name.
+        """
+        if self.title and station == self.station:
+            return self.title
+        return station.removesuffix(' Station')
 
     @classmethod
     def load(cls, path: Path = CONFIG_FILE) -> 'Config':

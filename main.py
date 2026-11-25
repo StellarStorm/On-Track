@@ -6,10 +6,11 @@ from pathlib import Path
 import httpx2
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from config import Config, ConfigError
+from config import CONFIG_FILE, Config, ConfigError
+from src.display import Display, DisplaySettings
 from src.logging_config import get_logger
 from src.septa import Departure, DepartureBoard
 from src.trainview import StationMap, TrainMap
@@ -18,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent
 TEMPLATE_DIR = BASE_DIR / 'templates'
 STATIC_DIR = BASE_DIR / 'static'
 MAP_FILE = STATIC_DIR / 'map.json'
+# Choices made on the control page, kept next to the config file.
+DISPLAY_FILE = CONFIG_FILE.parent / 'display.json'
 # iOS status bar styles for each map look: "default" is light.
 STATUS_BARS = {'light': 'default', 'dark': 'black'}
 
@@ -53,15 +56,24 @@ def departure_row(departure: Departure) -> dict:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.display = Display(
+        DisplaySettings(
+            view='board', station=config.station, direction=config.direction
+        ),
+        DISPLAY_FILE,
+    )
+    settings, _ = app.state.display.current()
     with httpx2.Client() as client:
         app.state.board = DepartureBoard(
             client,
-            station=config.station,
+            station=settings.station,
             rows=config.rows,
-            direction=config.direction,
+            direction=settings.direction,
             ttl_seconds=config.refresh_seconds,
         )
-        logger.info('Showing departures for %s', config.station)
+        logger.info(
+            'Showing the %s; departures for %s', settings.view, settings.station
+        )
         app.state.trains = None
         if MAP_FILE.exists():
             app.state.trains = TrainMap(
@@ -91,15 +103,25 @@ async def revalidate(request: Request, call_next):
 
 
 @app.get('/')
+def display_view(request: Request):
+    """Whichever view the control page has chosen. Point the kiosk here."""
+    settings, _ = request.app.state.display.current()
+    return map_view() if settings.view == 'map' else board_view()
+
+
+@app.get('/board')
 def board_view():
     return FileResponse(TEMPLATE_DIR / 'board.html')
 
 
 @app.get('/departures')
 def get_departures(request: Request):
-    departures, updated, stale = request.app.state.board.snapshot()
+    settings, _ = request.app.state.display.current()
+    board = request.app.state.board
+    board.set_station(settings.station, settings.direction)
+    departures, updated, stale = board.snapshot()
     return {
-        'title': config.board_title,
+        'title': config.title_for(settings.station),
         'rows': config.rows,
         'refresh_seconds': config.refresh_seconds,
         'time_format': config.time_format,
@@ -151,6 +173,49 @@ def get_trains(request: Request):
             if train.station
         ],
     }
+
+
+def display_state(display: Display) -> dict:
+    settings, version = display.current()
+    return {
+        'view': settings.view,
+        'station': settings.station,
+        'direction': settings.direction,
+        'version': version,
+    }
+
+
+@app.get('/display')
+def get_display(request: Request):
+    """The display settings. Open pages poll this and reload on a change."""
+    return display_state(request.app.state.display)
+
+
+@app.get('/control')
+def control_view():
+    return FileResponse(TEMPLATE_DIR / 'control.html')
+
+
+@app.post('/control')
+async def update_display(request: Request):
+    """Change the display settings: any of view, station and direction."""
+    # Only JSON is accepted. Browsers won't send JSON to another site
+    # without its permission, so a web page elsewhere can't quietly post
+    # here and change the display.
+    content_type = request.headers.get('content-type', '')
+    if not content_type.startswith('application/json'):
+        return JSONResponse({'error': 'send JSON'}, status_code=415)
+    try:
+        changes = await request.json()
+    except ValueError:
+        changes = None
+    if not isinstance(changes, dict):
+        return JSONResponse({'error': 'send a JSON object'}, status_code=400)
+    try:
+        request.app.state.display.update(**changes)
+    except ValueError as error:
+        return JSONResponse({'error': str(error)}, status_code=400)
+    return display_state(request.app.state.display)
 
 
 if __name__ == '__main__':

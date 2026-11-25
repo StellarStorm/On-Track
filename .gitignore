@@ -12,6 +12,8 @@ dist/
 
 # User settings
 config.toml
+# Display choices saved by the control page.
+display.json
 .env
 
 # macOS files

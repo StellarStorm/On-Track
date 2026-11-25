@@ -1,4 +1,4 @@
-"""Build the Regional Rail map for the /map page from SEPTA's GTFS data.
+"""Build the Regional Rail map and station list from SEPTA's data.
 
 Downloads SEPTA's latest GTFS release from GitHub (or reads a zip you
 already have), takes each line's stations in order, lays them out on the
@@ -10,6 +10,10 @@ again when SEPTA publishes new data::
 
 Only the small rail feed inside the release is used, and nothing is kept
 but the JSON.
+
+It also saves SEPTA's list of Regional Rail stations, with the exact name
+its departures API expects for each, to ``static/stations.json`` for the
+control page's station picker.
 
 The layout is a grid where one unit is the usual gap between stations; x
 grows to the right and y grows downward. Each line lists the points its
@@ -24,9 +28,11 @@ another name, a track or a station.
 
 import argparse
 import csv
+import html
 import io
 import json
 import math
+import re
 import urllib.request
 import zipfile
 from itertools import pairwise
@@ -34,6 +40,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / 'static' / 'map.json'
+STATIONS_OUTPUT = ROOT / 'static' / 'stations.json'
+# SEPTA's table of station names and the name its API expects for each.
+STATION_LIST = 'https://www3.septa.org/VIRegionalRail.html'
 RELEASES = 'https://api.github.com/repos/septadev/GTFS/releases/latest'
 USER_AGENT = 'on-track-map-builder'
 
@@ -242,6 +251,34 @@ def download_release() -> bytes:
     )
     with urllib.request.urlopen(request, timeout=120) as response:
         return response.read()
+
+
+def parse_station_list(page: str) -> list[dict[str, str]]:
+    """Station names and API names from SEPTA's station list page.
+
+    The page has a table whose rows are the station's name and the
+    parameter the API takes, such as ``Fern Rock Transportation Center``
+    and ``Fern Rock TC``.
+    """
+    rows = re.findall(
+        r'<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>', page, re.DOTALL
+    )
+    stations = [
+        {'name': html.unescape(name).strip(), 'api': html.unescape(api).strip()}
+        for name, api in rows
+    ]
+    return sorted(
+        (s for s in stations if s['name'] and s['api']),
+        key=lambda s: s['name'].lower(),
+    )
+
+
+def download_station_list() -> list[dict[str, str]]:
+    request = urllib.request.Request(
+        STATION_LIST, headers={'User-Agent': USER_AGENT}
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return parse_station_list(response.read().decode('utf-8', 'replace'))
 
 
 def read_rail_feed(release: bytes) -> dict[str, list[dict]]:
@@ -590,6 +627,18 @@ def main() -> None:
     print(
         f'Wrote {len(result["stations"])} stations on '
         f'{len(result["lines"])} lines to {OUTPUT.relative_to(ROOT)}'
+    )
+    try:
+        stations = download_station_list()
+    except OSError as error:
+        print(f'Kept the old station list; could not download it: {error}')
+        return
+    if not stations:
+        print('Kept the old station list; the page had no stations in it')
+        return
+    STATIONS_OUTPUT.write_text(json.dumps(stations, indent=1) + '\n')
+    print(
+        f'Wrote {len(stations)} stations to {STATIONS_OUTPUT.relative_to(ROOT)}'
     )
 
 

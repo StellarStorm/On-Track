@@ -192,6 +192,22 @@ class DepartureBoard:
         self._failed = False
         self._lock = threading.Lock()
 
+    def set_station(self, station: str, direction: str) -> None:
+        """Show another station or direction from the next snapshot on.
+
+        The departures for the old one are dropped, so the next snapshot
+        fetches fresh ones rather than waiting out the TTL.
+        """
+        with self._lock:
+            if (station, direction) == (self._station, self._direction):
+                return
+            self._station = station
+            self._direction = direction
+            self._departures = []
+            self._updated = None
+            self._last_attempt = None
+            self._failed = False
+
     def snapshot(self) -> tuple[list[Departure], datetime | None, bool]:
         """Return the departures, when they were fetched, and staleness.
 

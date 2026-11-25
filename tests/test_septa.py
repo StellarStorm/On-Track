@@ -120,3 +120,17 @@ def test_board_keeps_last_good_data_when_septa_fails(payload):
 def test_board_before_first_success():
     board = DepartureBoard(FakeClient(None), 'Jefferson Station', rows=4)
     assert board.snapshot() == ([], None, True)
+
+
+def test_board_set_station_fetches_fresh_departures(payload):
+    client = FakeClient(payload)
+    board = DepartureBoard(client, 'Jefferson Station', rows=4)
+    board.snapshot()
+    board.set_station('Elkins Park', 'northbound')
+    departures, _, _ = board.snapshot()
+    # A new station is fetched at once, without waiting out the TTL.
+    assert client.calls == 2
+    assert {d.direction for d in departures} == {'N'}
+    board.set_station('Elkins Park', 'northbound')
+    board.snapshot()
+    assert client.calls == 2

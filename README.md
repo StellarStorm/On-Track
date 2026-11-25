@@ -17,12 +17,15 @@ positions from its
 [TrainView API](https://www3.septa.org/api/TrainView/index.php). No account
 or API key is needed.
 
-| Path          | What it is                           |
-| ------------- | ------------------------------------ |
-| `/`           | The departure board                  |
-| `/departures` | The same data as JSON                |
-| `/map`        | The live Regional Rail map           |
-| `/trains`     | Every train and its station, as JSON |
+| Path          | What it is                                       |
+| ------------- | ------------------------------------------------ |
+| `/`           | The display: the board or the map, as chosen     |
+| `/control`    | Choose what the display shows, from any computer |
+| `/board`      | The departure board                              |
+| `/map`        | The live Regional Rail map                       |
+| `/departures` | The board's data as JSON                         |
+| `/trains`     | Every train and its station, as JSON             |
+| `/display`    | The display's current settings, as JSON          |
 
 ## Getting Started
 
@@ -68,6 +71,23 @@ uv run python main.py
 
 Open `http://localhost:8000/`, or `http://<this computer's address>:8000/`
 from another device.
+
+## Controlling the Display
+
+Open `http://<this computer's address>:8000/control` on any computer or
+phone on the network to choose what the display at `/` shows: the
+departure board or the live map, the board's station, and its direction.
+The display checks every 5 seconds and reloads when something changes, so
+there's no need to touch a locked-down kiosk.
+
+`station` and `direction` in `config.toml` are only the starting values.
+Choices made on the control page are saved to `display.json` next to the
+config file and kept across restarts; delete that file to go back to the
+config's values.
+
+The control page has no password: anyone on your network can change what
+the display shows. It only accepts changes sent as JSON, so a web page on
+another site can't change it through your browser.
 
 ## Reading the Board
 

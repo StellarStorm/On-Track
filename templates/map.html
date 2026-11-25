@@ -372,6 +372,31 @@
           setNotice("No map: run scripts/build_map.py");
         }
       );
+      // The control page can switch what this screen shows. Check every
+      // few seconds, and reload when anything changes: the server then
+      // sends whichever view is chosen, for the chosen station.
+      var DISPLAY_CHECK_SECONDS = 5;
+      var displayVersion = null;
+
+      function watchDisplay() {
+        function again() {
+          setTimeout(watchDisplay, DISPLAY_CHECK_SECONDS * 1000);
+        }
+        getJSON(
+          "/display",
+          function (data) {
+            if (displayVersion === null) {
+              displayVersion = data.version;
+            } else if (data.version !== displayVersion) {
+              window.location.reload();
+              return;
+            }
+            again();
+          },
+          again
+        );
+      }
+
       window.addEventListener("resize", function () {
         if (map) {
           fit();
@@ -379,6 +404,7 @@
       });
       tick();
       setInterval(tick, 1000);
+      watchDisplay();
       // Old Safari slowly leaks memory on pages left open for days.
       setTimeout(function () {
         window.location.reload();
