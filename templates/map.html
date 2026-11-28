@@ -115,10 +115,10 @@
       <div>SEPTA Regional Rail</div>
       <div><span id="clock"></span> <span id="notice"></span></div>
     </div>
+    <script src="/static/kiosk.js"></script>
     <script>
       // Kept to older JavaScript so the page runs on old iPads.
       var NS = "http://www.w3.org/2000/svg";
-      var RELOAD_HOURS = 6;
       var settings = { refresh_seconds: 30, time_format: "12" };
       var map = null;
       // Each station's lit marker, by stop id.
@@ -134,30 +134,6 @@
           parent.appendChild(node);
         }
         return node;
-      }
-
-      function getJSON(url, done, failed) {
-        var request = new XMLHttpRequest();
-        request.open("GET", url);
-        request.timeout = 15000;
-        request.onload = function () {
-          var data = null;
-          if (request.status === 200) {
-            try {
-              data = JSON.parse(request.responseText);
-            } catch (error) {
-              data = null;
-            }
-          }
-          if (data) {
-            done(data);
-          } else {
-            failed();
-          }
-        };
-        request.onerror = failed;
-        request.ontimeout = failed;
-        request.send();
       }
 
       // Where a station's name goes: level to the left or right of the
@@ -355,13 +331,10 @@
       }
 
       function tick() {
-        var now = new Date();
-        var hours = now.getHours();
-        var minutes = ("0" + now.getMinutes()).slice(-2);
-        document.getElementById("clock").textContent =
-          settings.time_format === "24"
-            ? ("0" + hours).slice(-2) + ":" + minutes
-            : (hours % 12 || 12) + ":" + minutes + (hours < 12 ? " AM" : " PM");
+        document.getElementById("clock").textContent = formatClock(
+          new Date(),
+          settings.time_format
+        );
       }
 
       getJSON(
@@ -375,30 +348,6 @@
           setNotice("No map: run scripts/build_map.py");
         }
       );
-      // The control page can switch what this screen shows. Check every
-      // few seconds, and reload when anything changes: the server then
-      // sends whichever view is chosen, for the chosen station.
-      var DISPLAY_CHECK_SECONDS = 5;
-      var displayVersion = null;
-
-      function watchDisplay() {
-        function again() {
-          setTimeout(watchDisplay, DISPLAY_CHECK_SECONDS * 1000);
-        }
-        getJSON(
-          "/display",
-          function (data) {
-            if (displayVersion === null) {
-              displayVersion = data.version;
-            } else if (data.version !== displayVersion) {
-              window.location.reload();
-              return;
-            }
-            again();
-          },
-          again
-        );
-      }
 
       window.addEventListener("resize", function () {
         if (map) {
@@ -407,29 +356,6 @@
       });
       tick();
       setInterval(tick, 1000);
-      watchDisplay();
-      // Show the mouse pointer while it moves; hide it again when idle.
-      var POINTER_IDLE_SECONDS = 3;
-      var pointerTimer = null;
-      var pointerX = null;
-      var pointerY = null;
-      document.addEventListener("mousemove", function (event) {
-        // Some browsers send mousemove when only the page changed.
-        if (event.screenX === pointerX && event.screenY === pointerY) {
-          return;
-        }
-        pointerX = event.screenX;
-        pointerY = event.screenY;
-        document.body.classList.add("pointer");
-        clearTimeout(pointerTimer);
-        pointerTimer = setTimeout(function () {
-          document.body.classList.remove("pointer");
-        }, POINTER_IDLE_SECONDS * 1000);
-      });
-      // Old Safari slowly leaks memory on pages left open for days.
-      setTimeout(function () {
-        window.location.reload();
-      }, RELOAD_HOURS * 3600 * 1000);
     </script>
   </body>
 </html>
