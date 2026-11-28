@@ -57,6 +57,9 @@
         -webkit-text-size-adjust: 100%;
         cursor: none;
       }
+      body.pointer {
+        cursor: auto;
+      }
       #board {
         position: relative;
         height: 100%;
@@ -686,6 +689,24 @@
       setInterval(tick, 1000);
       refresh();
       watchDisplay();
+      // Show the mouse pointer while it moves; hide it again when idle.
+      var POINTER_IDLE_SECONDS = 3;
+      var pointerTimer = null;
+      var pointerX = null;
+      var pointerY = null;
+      document.addEventListener("mousemove", function (event) {
+        // Some browsers send mousemove when only the page changed.
+        if (event.screenX === pointerX && event.screenY === pointerY) {
+          return;
+        }
+        pointerX = event.screenX;
+        pointerY = event.screenY;
+        document.body.classList.add("pointer");
+        clearTimeout(pointerTimer);
+        pointerTimer = setTimeout(function () {
+          document.body.classList.remove("pointer");
+        }, POINTER_IDLE_SECONDS * 1000);
+      });
       // Old Safari slowly leaks memory on pages left open for days.
       setTimeout(function () {
         window.location.reload();
